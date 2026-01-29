@@ -1,0 +1,16 @@
+[package]
+name = "gold-state"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+gold-core = { path = "../core" }
+gold-crypto = { path = "../crypto" }
+dashmap = { workspace = true }
+parking_lot = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+chrono = { workspace = true }
+hex = { workspace = true }
+tracing = { workspace = true }

@@ -1,0 +1,15 @@
+[package]
+name = "gold-mempool"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+gold-core = { path = "../core" }
+gold-crypto = { path = "../crypto" }
+gold-state = { path = "../state" }
+dashmap = { workspace = true }
+parking_lot = { workspace = true }
+tokio = { workspace = true }
+chrono = { workspace = true }
+tracing = { workspace = true }
+thiserror = { workspace = true }
