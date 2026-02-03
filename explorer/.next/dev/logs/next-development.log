@@ -1,0 +1,15 @@
+[00:00:00.765] Server  LOG     ✓ Ready in 538ms
+[00:01:21.853] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:02:06.535] Browser LOG     Move confirmed: {"fromBucket":1,"notes":"","reason":"Deposit review required","sendEmail":true,"toBucket":2,"user":"john.doe@email.com"}
+[00:06:46.130] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:04:31.211] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:02:37.418] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:04:01.361] Server  LOG     ✓ Compiled in 187ms
+[03:04:11.072] Server  LOG     ✓ Compiled in 111ms
+[03:06:24.825] Server  LOG     ✓ Compiled in 192ms
+[03:06:28.905] Server  LOG     ✓ Compiled in 129ms
+[03:06:32.987] Server  LOG     ✓ Compiled in 136ms
+[03:06:36.514] Server  LOG     ✓ Compiled in 155ms
+[03:06:40.647] Server  LOG     ✓ Compiled in 91ms
+[03:06:44.238] Server  LOG     ✓ Compiled in 129ms
+[03:06:47.880] Server  LOG     ✓ Compiled in 139ms

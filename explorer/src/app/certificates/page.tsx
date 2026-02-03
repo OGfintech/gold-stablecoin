@@ -5,11 +5,21 @@ import { api, shortenHash, formatDate, formatTokenAmount } from '@/lib/api'
 import { FileText, CheckCircle, Clock, XCircle, AlertCircle } from 'lucide-react'
 
 export default function CertificatesPage() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['certificates'],
     queryFn: api.getCertificates,
-    refetchInterval: 10000,
+    retry: 1,
+    refetchInterval: false,
   })
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 space-y-4">
+        <div className="text-red-400 text-xl">API Unavailable</div>
+        <p className="text-gray-400">Start the mock server: cd mock-server && node server.js</p>
+      </div>
+    )
+  }
 
   const getStatusIcon = (status: string) => {
     switch (status) {

@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/oscargarcia/Desktop/AU-GOLD-BLOCK/gold-stablecoin-main/explorer/src/app/start/layout.tsx"],"sourcesContent":["import type { Metadata } from 'next'\n\nexport const metadata: Metadata = {\n  title: 'STTAURX Security Terminal',\n  description: 'Secure access to STTAURX Platform',\n}\n\nexport default function StartLayout({\n  children,\n}: {\n  children: React.ReactNode\n}) {\n  // Simple wrapper - the page itself handles full-screen positioning\n  return <>{children}</>\n}\n"],"names":[],"mappings":";;;;;;;;AAEO,MAAM,WAAqB;IAChC,OAAO;IACP,aAAa;AACf;AAEe,SAAS,YAAY,EAClC,QAAQ,EAGT;IACC,mEAAmE;IACnE,qBAAO;kBAAG;;AACZ"}}]
+}

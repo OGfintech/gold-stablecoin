@@ -7,8 +7,12 @@ import { Navigation } from '@/components/Navigation'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Gold Stablecoin Explorer',
-  description: 'Block explorer for the gold-backed stablecoin blockchain',
+  title: 'STTAURX Explorer - Blockchain Explorer',
+  description: 'Block explorer for the STTAURX gold-backed stablecoin blockchain',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
 }
 
 export default function RootLayout({

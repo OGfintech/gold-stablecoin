@@ -1,0 +1,11 @@
+{
+  "/admin/buckets/page": "app/admin/buckets/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/admin/security/page": "app/admin/security/page.js",
+  "/blocks/page": "app/blocks/page.js",
+  "/certificates/page": "app/certificates/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/docs/page": "app/docs/page.js",
+  "/start/page": "app/start/page.js",
+  "/transactions/page": "app/transactions/page.js"
+}

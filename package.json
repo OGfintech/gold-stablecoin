@@ -1,0 +1,29 @@
+{
+  "name": "gold-chain-platform",
+  "version": "1.0.0",
+  "description": "Gold-backed stablecoin platform with blockchain explorer, wallet, and trade finance",
+  "private": true,
+  "scripts": {
+    "security": "./scripts/security-check.sh",
+    "security:check": "./scripts/security-check.sh",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:explorer\" \"npm run dev:wallet\"",
+    "dev:server": "cd mock-server && node server.js",
+    "dev:explorer": "cd explorer && npm run dev",
+    "dev:wallet": "cd wallet && npm run dev",
+    "install:all": "npm install && cd mock-server && npm install && cd ../explorer && npm install && cd ../wallet && npm install",
+    "audit:all": "npm audit && cd mock-server && npm audit && cd ../explorer && npm audit && cd ../wallet && npm audit",
+    "start": "npm run security && npm run dev"
+  },
+  "keywords": [
+    "blockchain",
+    "stablecoin",
+    "gold",
+    "crypto",
+    "trade-finance"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

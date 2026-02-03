@@ -7,8 +7,12 @@ import { Navigation } from '@/components/Navigation'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Gold Wallet',
-  description: 'Wallet for gold-backed stablecoin',
+  title: 'STTAURX Wallet - Gold-Backed Digital Wallet',
+  description: 'Wallet for STTAURX gold-backed stablecoin',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
 }
 
 export default function RootLayout({

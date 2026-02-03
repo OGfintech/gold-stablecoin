@@ -9,11 +9,21 @@ export default function BlocksPage() {
   const [page, setPage] = useState(0)
   const limit = 20
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['blocks', page],
     queryFn: () => api.getBlocks(limit, page * limit),
-    refetchInterval: 5000,
+    retry: 1,
+    refetchInterval: false,
   })
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 space-y-4">
+        <div className="text-red-400 text-xl">API Unavailable</div>
+        <p className="text-gray-400">Start the mock server: cd mock-server && node server.js</p>
+      </div>
+    )
+  }
 
   const totalPages = Math.ceil((data?.total || 0) / limit)
 

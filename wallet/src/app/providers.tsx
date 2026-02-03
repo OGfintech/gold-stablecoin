@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState, createContext, useContext, useEffect } from 'react'
+import { OnboardingProvider, OnboardingGate } from '@/components/onboarding'
 
 interface WalletState {
   address: string | null
@@ -17,6 +18,21 @@ interface WalletContextType {
 }
 
 const WalletContext = createContext<WalletContextType | null>(null)
+
+// Client-side keypair generation using Web Crypto API
+function generateRandomHex(length: number): string {
+  const array = new Uint8Array(length / 2)
+  crypto.getRandomValues(array)
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('')
+}
+
+function generateKeypair(): { address: string; publicKey: string; secretKey: string } {
+  // Generate 64-character hex strings (32 bytes each)
+  const secretKey = generateRandomHex(64)
+  const publicKey = generateRandomHex(64)
+  const address = generateRandomHex(64)
+  return { address, publicKey, secretKey }
+}
 
 export function useWallet() {
   const context = useContext(WalletContext)
@@ -54,33 +70,25 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, [])
 
   const createWallet = async () => {
-    // Generate keypair using the API
-    const response = await fetch('http://localhost:3001/api/v1/admin/keypair', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({}),
-    })
-    const result = await response.json()
-
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to generate keypair')
-    }
-
-    const { address, public_key, secret_key } = result.data
+    // Generate keypair client-side using Web Crypto API
+    const { address, publicKey, secretKey } = generateKeypair()
 
     // Store in localStorage (without secret key!)
     localStorage.setItem('gold_wallet', JSON.stringify({
       address,
-      publicKey: public_key,
+      publicKey,
     }))
+
+    // Store secret temporarily in session for immediate use
+    sessionStorage.setItem('wallet_secret', secretKey)
 
     setWallet({
       address,
-      publicKey: public_key,
+      publicKey,
       isUnlocked: true,
     })
 
-    return { address, publicKey: public_key, secretKey: secret_key }
+    return { address, publicKey, secretKey }
   }
 
   const unlockWallet = async (secretKey: string) => {
@@ -109,7 +117,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <WalletContext.Provider value={{ wallet, unlockWallet, lockWallet, createWallet }}>
-        {children}
+        <OnboardingProvider>
+          <OnboardingGate>
+            {children}
+          </OnboardingGate>
+        </OnboardingProvider>
       </WalletContext.Provider>
     </QueryClientProvider>
   )

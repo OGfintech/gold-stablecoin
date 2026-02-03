@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useWallet } from './providers'
 import { walletApi } from '@/lib/api'
@@ -8,13 +9,20 @@ import {
   GoldPriceWidget,
   TransactionList,
   QuickActions,
+  dashboardActions,
   WalletStatus,
   AccountInfo,
   WalletSetup,
 } from '@/components/wallet'
+import { DepositFlow, ReceiveCoins } from '@/components/deposit'
+import { WithdrawFlow } from '@/components/withdraw'
+import { StakingDashboard } from '@/components/staking'
 
 export default function WalletHome() {
   const { wallet, createWallet, unlockWallet, lockWallet } = useWallet()
+  const [showDeposit, setShowDeposit] = useState(false)
+  const [showReceive, setShowReceive] = useState(false)
+  const [showWithdraw, setShowWithdraw] = useState(false)
 
   const {
     data: balanceData,
@@ -59,13 +67,23 @@ export default function WalletHome() {
 
       <GoldPriceWidget />
 
+      <StakingDashboard
+        walletAddress={wallet.address}
+        walletBalance={balance}
+      />
+
       <WalletStatus
         isUnlocked={wallet.isUnlocked}
         onLock={lockWallet}
         onUnlock={unlockWallet}
       />
 
-      <QuickActions />
+      <QuickActions
+        actions={dashboardActions}
+        onDeposit={() => setShowDeposit(true)}
+        onReceive={() => setShowReceive(true)}
+        onWithdraw={() => setShowWithdraw(true)}
+      />
 
       <TransactionList
         transactions={transactions}
@@ -80,6 +98,27 @@ export default function WalletHome() {
           nonce={balanceData.nonce}
           isAdmin={balanceData.is_admin}
           totalTransactions={txData?.total}
+        />
+      )}
+
+      {/* Deposit Modal */}
+      {showDeposit && (
+        <DepositFlow onClose={() => setShowDeposit(false)} />
+      )}
+
+      {/* Receive Modal */}
+      {showReceive && (
+        <ReceiveCoins
+          walletAddress={wallet.address}
+          onClose={() => setShowReceive(false)}
+        />
+      )}
+
+      {/* Withdraw Modal */}
+      {showWithdraw && (
+        <WithdrawFlow
+          goldBalance={balance}
+          onClose={() => setShowWithdraw(false)}
         />
       )}
     </div>

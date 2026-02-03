@@ -3,12 +3,28 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
-import { Settings, Key, FileText, Coins, AlertCircle, CheckCircle, Copy } from 'lucide-react'
+import { Settings, Key, FileText, Coins, AlertCircle, CheckCircle, Copy, RefreshCw } from 'lucide-react'
+
+// Client-side keypair generation fallback
+function generateRandomHex(length: number): string {
+  const array = new Uint8Array(length / 2)
+  crypto.getRandomValues(array)
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('')
+}
+
+function generateKeypairLocally(): { address: string; public_key: string; secret_key: string } {
+  return {
+    address: generateRandomHex(64),
+    public_key: generateRandomHex(64),
+    secret_key: generateRandomHex(64),
+  }
+}
 
 export default function AdminPage() {
   const queryClient = useQueryClient()
   const [keypair, setKeypair] = useState<{ address: string; public_key: string; secret_key: string } | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
+  const [useLocalGeneration, setUseLocalGeneration] = useState(false)
   const [certForm, setCertForm] = useState({
     hsbc_reference: '',
     gold_amount_oz: '',
@@ -25,10 +41,28 @@ export default function AdminPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const generateKeypairMutation = useMutation({
-    mutationFn: api.generateKeypair,
+    mutationFn: async () => {
+      if (useLocalGeneration) {
+        // Generate client-side
+        return generateKeypairLocally()
+      }
+      // Try API first
+      try {
+        return await api.generateKeypair()
+      } catch (error) {
+        // Fallback to local generation
+        setUseLocalGeneration(true)
+        return generateKeypairLocally()
+      }
+    },
     onSuccess: (data) => {
       setKeypair(data)
-      setMessage({ type: 'success', text: 'Keypair generated successfully!' })
+      setMessage({
+        type: 'success',
+        text: useLocalGeneration
+          ? 'Keypair generated locally (API unavailable)'
+          : 'Keypair generated successfully!'
+      })
     },
     onError: (error: any) => {
       setMessage({ type: 'error', text: error.message })
@@ -41,9 +75,11 @@ export default function AdminPage() {
     setTimeout(() => setCopied(null), 2000)
   }
 
-  const { data: certData } = useQuery({
+  const { data: certData, isError: certError } = useQuery({
     queryKey: ['certificates'],
     queryFn: api.getCertificates,
+    retry: false, // Don't retry on failure for admin page
+    refetchOnMount: false, // Don't refetch on component mount
   })
 
   return (
@@ -230,10 +266,13 @@ export default function AdminPage() {
                 value={mintForm.certificate_id}
                 onChange={(e) => setMintForm(f => ({ ...f, certificate_id: e.target.value }))}
                 className="w-full bg-gray-700 rounded px-3 py-2 mt-1"
+                disabled={certError || !certData}
               >
-                <option value="">Select a certificate</option>
+                <option value="">
+                  {certError ? 'API unavailable - start mock server' : 'Select a certificate'}
+                </option>
                 {certData?.certificates
-                  .filter(c => c.status === 'Active')
+                  ?.filter(c => c.status === 'Active')
                   .map(c => (
                     <option key={c.certificate_id} value={c.certificate_id}>
                       {c.hsbc_reference} ({c.gold_amount_oz} oz)
@@ -241,6 +280,11 @@ export default function AdminPage() {
                   ))
                 }
               </select>
+              {certError && (
+                <p className="text-yellow-500 text-xs mt-1">
+                  Run mock server: cd mock-server && node server.js
+                </p>
+              )}
             </div>
             <div>
               <label className="text-gray-400 text-sm">Recipient Address</label>

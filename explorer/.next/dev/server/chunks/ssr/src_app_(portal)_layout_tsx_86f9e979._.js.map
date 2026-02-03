@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/oscargarcia/Desktop/AU-GOLD-BLOCK/gold-stablecoin-main/explorer/src/app/%28portal%29/layout.tsx"],"sourcesContent":["import type { Metadata } from 'next'\nimport { Inter } from 'next/font/google'\nimport '../globals.css'\nimport { Providers } from '../providers'\n\nconst inter = Inter({ subsets: ['latin'] })\n\nexport const metadata: Metadata = {\n  title: 'STTAURX Security Terminal',\n  description: 'Secure access to STTAURX Platform',\n  icons: {\n    icon: '/icon.svg',\n    apple: '/icon.svg',\n  },\n}\n\nexport default function PortalLayout({\n  children,\n}: {\n  children: React.ReactNode\n}) {\n  return (\n    <html lang=\"en\">\n      <body className={`${inter.className} bg-gray-900 text-white min-h-screen`}>\n        <Providers>\n          {/* No Navigation - Full screen portal */}\n          {children}\n        </Providers>\n      </body>\n    </html>\n  )\n}\n"],"names":[],"mappings":";;;;;;;;AAGA;;;;;AAIO,MAAM,WAAqB;IAChC,OAAO;IACP,aAAa;IACb,OAAO;QACL,MAAM;QACN,OAAO;IACT;AACF;AAEe,SAAS,aAAa,EACnC,QAAQ,EAGT;IACC,qBACE,8OAAC;QAAK,MAAK;kBACT,cAAA,8OAAC;YAAK,WAAW,GAAG,oJAAK,CAAC,SAAS,CAAC,oCAAoC,CAAC;sBACvE,cAAA,8OAAC,qIAAS;0BAEP;;;;;;;;;;;;;;;;AAKX"}}]
+}

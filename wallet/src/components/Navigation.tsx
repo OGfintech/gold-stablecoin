@@ -20,10 +20,8 @@ export function Navigation() {
       {/* Header */}
       <header className="p-4 border-b border-gray-800">
         <div className="flex items-center justify-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
-            <span className="text-black font-bold text-sm">Au</span>
-          </div>
-          <span className="text-xl font-bold text-yellow-500">Gold Wallet</span>
+          <img src="/icon.svg" alt="STTAURX" className="w-10 h-10" />
+          <span className="text-xl font-bold text-yellow-500">STTAURX Wallet</span>
         </div>
       </header>
 

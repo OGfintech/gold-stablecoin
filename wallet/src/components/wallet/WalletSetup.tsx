@@ -115,11 +115,14 @@ export function WalletSetup({ onCreateWallet, onImportWallet }: WalletSetupProps
   // Initial or import screen
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 pb-20">
-      <GradientBadge size="xl">
-        <Wallet />
-      </GradientBadge>
+      {/* Full Logo */}
+      <img
+        src="/logo.svg"
+        alt="STTAURX"
+        className="h-20 md:h-24"
+      />
 
-      <h1 className="text-2xl font-bold">Welcome to Gold Wallet</h1>
+      <h1 className="text-2xl font-bold">Welcome to STTAURX Wallet</h1>
       <p className="text-gray-400 text-center max-w-xs">
         A secure wallet for your gold-backed stablecoin tokens
       </p>
