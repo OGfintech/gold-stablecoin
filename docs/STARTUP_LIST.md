@@ -80,7 +80,7 @@ npm run dev
 **Security Portal:** http://localhost:3000/start
 - Activate with **Ctrl+Shift+A** or voice command **"Initialize Protocol OG"**
 - Password: `AUTrade88`
-- See [SECURITY_PORTAL.md](./SECURITY_PORTAL.md) for full documentation
+- See [SECURITY_PORTAL.md](./blockchain/SECURITY_PORTAL.md) for full documentation
 
 ---
 
@@ -172,13 +172,29 @@ Open **5 terminal windows/tabs** for full development:
 
 **IP Address:** 146.190.149.27
 **Purpose:** Production/staging deployment
+**Full Guide:** [DEPLOYMENT.md](./blockchain/DEPLOYMENT.md)
+
+### Quick Deploy
+```bash
+# From project root - full deploy
+./scripts/deploy.sh
+
+# Quick sync (no rebuild)
+./scripts/deploy.sh --quick
+
+# Restart services only
+./scripts/deploy.sh --restart
+
+# Check status
+./scripts/deploy.sh --status
+```
 
 ### SSH Access
 ```bash
 ssh root@146.190.149.27
 ```
 
-### Start Services on Droplet
+### Manual Server Commands
 ```bash
 # SSH into droplet
 ssh root@146.190.149.27
@@ -189,9 +205,21 @@ cd /var/www/gold-stablecoin
 # Start with PM2 (production)
 pm2 start ecosystem.config.js
 
-# Or start manually
-./start-demo.sh
+# View logs
+pm2 logs
+
+# Restart all services
+pm2 restart all
 ```
+
+### Production URLs
+| Service | URL |
+|---------|-----|
+| Security Portal | http://146.190.149.27:3000/start |
+| Explorer | http://146.190.149.27:3000 |
+| Wallet | http://146.190.149.27:3002 |
+| Marketplace | http://146.190.149.27:3003 |
+| API | http://146.190.149.27:3001 |
 
 ---
 

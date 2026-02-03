@@ -167,7 +167,7 @@ const docs: DocItem[] = [
     description: 'Complete user journey - Wallet → Deposits → Minting → Active',
     icon: <Users className="w-6 h-6" />,
     status: 'planning',
-    fileName: 'ONBOARDING_BUCKETS.md',
+    fileName: 'blockchain/ONBOARDING_BUCKETS.md',
     sections: [
       'Bucket 1: Wallet Onboarding',
       'Bucket 2: Deposit Flow (USDT, Bank, Upload, Cash)',
@@ -183,7 +183,7 @@ const docs: DocItem[] = [
     description: 'Wallet UI onboarding implementation phases',
     icon: <Book className="w-6 h-6" />,
     status: 'in_progress',
-    fileName: 'USER_ONBOARDING_PLAN.md',
+    fileName: 'blockchain/USER_ONBOARDING_PLAN.md',
     sections: [
       'Phase 1: Welcome Flow ✓',
       'Phase 2: Wallet Creation',
@@ -199,7 +199,7 @@ const docs: DocItem[] = [
     description: 'Admin dashboard implementation phases',
     icon: <Shield className="w-6 h-6" />,
     status: 'in_progress',
-    fileName: 'ADMIN_WORKFLOW_PLAN.md',
+    fileName: 'blockchain/ADMIN_WORKFLOW_PLAN.md',
     sections: [
       'Phase 1: Core Admin Functions',
       'Phase 2: Authentication',
@@ -216,7 +216,7 @@ const docs: DocItem[] = [
     description: 'B2B commodities trading platform with Smart Letters of Credit',
     icon: <ShoppingCart className="w-6 h-6" />,
     status: 'in_progress',
-    fileName: 'MARKETPLACE_PLAN.md',
+    fileName: 'marketplace/MARKETPLACE_PLAN.md',
     sections: [
       'Phase 2.1: Core Setup ✓',
       'Phase 2.2: Public Pages ✓',
@@ -233,7 +233,7 @@ const docs: DocItem[] = [
     description: 'Iron Man-style animated landing page with voice/keyboard activation',
     icon: <Lock className="w-6 h-6" />,
     status: 'complete',
-    fileName: 'SECURITY_PORTAL.md',
+    fileName: 'blockchain/SECURITY_PORTAL.md',
     sections: [
       'Voice Activation ("Initialize Protocol OG") ✓',
       'Keyboard Shortcut (Ctrl+Shift+A) ✓',
@@ -251,7 +251,7 @@ const docs: DocItem[] = [
     description: 'Admin controls for updating portal password and voice phrase',
     icon: <Shield className="w-6 h-6" />,
     status: 'planning',
-    fileName: 'SECURITY_ADMIN_PLAN.md',
+    fileName: 'blockchain/SECURITY_ADMIN_PLAN.md',
     sections: [
       'Phase 1: Backend API (securitySettings.json)',
       'Phase 2: Admin UI (/admin/security)',

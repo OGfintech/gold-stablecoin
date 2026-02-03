@@ -190,8 +190,8 @@ After 5 failed password attempts, refresh the page to reset.
 
 ## Related Documentation
 
-- [STARTUP_LIST.md](./STARTUP_LIST.md) - Server startup procedures
-- [SECURITY_CHECKLIST.md](../SECURITY_CHECKLIST.md) - Security audit checklist
+- [STARTUP_LIST.md](../STARTUP_LIST.md) - Server startup procedures
+- [SECURITY_CHECKLIST.md](../../SECURITY_CHECKLIST.md) - Security audit checklist
 - [SECURITY_SCAN_REPORT.md](./SECURITY_SCAN_REPORT.md) - Latest security scan results
 
 ---

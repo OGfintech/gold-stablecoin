@@ -310,10 +310,10 @@ From Reuters Analysis (February 3, 2026):
 - [Tether Gold vs Pax Gold Comparison](https://bingx.com/en/learn/article/tether-gold-xaut-vs-pax-gold-paxg-which-tokenized-gold-coin-is-better)
 
 ### Internal Documents
-- [WHITEPAPER.md](/docs/WHITEPAPER.md) - Main white paper draft
-- [SECURITY_AUDIT_REPORT.md](/docs/SECURITY_AUDIT_REPORT.md) - Security documentation
-- [MARKETPLACE_PLAN.md](/docs/MARKETPLACE_PLAN.md) - Marketplace features
-- [SECURITY_PORTAL.md](/docs/SECURITY_PORTAL.md) - Portal documentation
+- [WHITEPAPER.md](./WHITEPAPER.md) - Main white paper draft
+- [SECURITY_AUDIT_REPORT.md](../blockchain/SECURITY_AUDIT_REPORT.md) - Security documentation
+- [MARKETPLACE_PLAN.md](../marketplace/MARKETPLACE_PLAN.md) - Marketplace features
+- [SECURITY_PORTAL.md](../blockchain/SECURITY_PORTAL.md) - Portal documentation
 
 ---
 

@@ -11,11 +11,11 @@
 | # | Section | Status | Priority |
 |---|---------|--------|----------|
 | 1 | Abstract / Executive Summary | ○ Not Started | High |
-| 2 | Problem Statement | ○ Not Started | High |
-| 3 | Solution Overview | ○ Not Started | High |
-| 4 | Market Opportunity | ○ Not Started | Medium |
+| 2 | Problem Statement | ✓ **Complete** | High |
+| 3 | Solution Overview | ✓ **Complete** | High |
+| 4 | Market Opportunity | ✓ **Complete** | Medium |
 | 5 | Technical Architecture | ○ Not Started | High |
-| 6 | Tokenomics | ○ Not Started | High |
+| 6 | Tokenomics | ✓ **Complete** | High |
 | 7 | Gold Custody & Verification | ○ Not Started | Critical |
 | 8 | Regulatory Compliance | ○ Not Started | Critical |
 | 9 | Security Framework | ○ Not Started | High |
@@ -56,95 +56,384 @@ the stability of precious metals with the efficiency of digital assets.
 
 ## 2. Problem Statement
 
-**Purpose:** Identify market pain points and why existing solutions fail
+The gold-backed token market has grown to over $6 billion in 2026, quadrupling since the end of 2024. Yet despite this growth, fundamental problems persist that undermine the core value proposition these tokens claim to offer.
 
-### Content to Include:
-- [ ] Current challenges in gold ownership
-  - High barriers to entry (minimum purchases)
-  - Storage costs and security concerns
-  - Lack of divisibility
-  - Limited trading hours
-  - Geographic restrictions
-  - Settlement delays (T+2 or longer)
+### 2.1 The Trust Paradox
 
-- [ ] Problems with existing digital gold solutions
-  - Lack of transparency in reserves
-  - Centralized control
-  - No blockchain verification
-  - Limited DeFi integration
+Gold-backed tokens promise the stability of physical gold with the efficiency of blockchain. In practice, most deliver neither reliably.
 
-- [ ] Cryptocurrency volatility issues
-  - Bitcoin/altcoin price swings
-  - Need for stable store of value
-  - Inflation hedge requirements
+**Ownership Ambiguity.** When purchasing existing gold tokens, investors face a troubling reality: legal ownership of the underlying gold is often unclear. Industry observers note that in a custodian bankruptcy scenario, courts might determine that token holders own only the token itself—not the gold it supposedly represents. This defeats the fundamental purpose of gold-backed assets.
 
-### Statistics to Research:
-- Global gold market size
-- Digital gold market growth
-- Stablecoin market cap trends
-- Retail investor gold demand
+**Custody Opacity.** Most gold tokens rely on crypto-native companies or specialized vault operators for custody. While these custodians may be reputable, they lack the regulatory oversight, capital reserves, and institutional credibility of globally systemically important banks (G-SIBs). Investors must trust quarterly attestations rather than verifiable, real-time proof.
+
+**Pooled Reserve Model.** Existing tokens operate on a pooled reserve basis: the issuer maintains a general gold reserve, and token holders have a proportional claim against this pool. This creates ambiguity about which specific gold backs which tokens, and introduces counterparty risk if the issuer faces financial difficulties.
+
+### 2.2 Structural Deficiencies in Existing Solutions
+
+| Problem | Current State | Impact |
+|---------|--------------|--------|
+| **Minting Opacity** | Tokens minted at issuer discretion from pooled reserves | No direct link between user purchase and gold acquisition |
+| **Price Disconnect** | Token price determined by exchange trading | Users pay market premium, not spot price |
+| **Verification Gaps** | Quarterly or monthly attestations | Extended periods without independent verification |
+| **No Utility Beyond Holding** | Tokens function only as store of value | Zero yield; opportunity cost vs. other assets |
+| **Redemption Risk** | Concentrated redemption requests could expose reserve gaps | Potential for bank-run dynamics |
+| **Geographic Concentration** | Vaults concentrated in limited jurisdictions | Geopolitical seizure risk |
+
+### 2.3 The Fragmentation Problem
+
+The current market suffers from a fundamental fragmentation:
+
+**Coin-Only Approaches** (PAXG, XAUT, AWG): These projects create gold-backed tokens and hope third-party exchanges, wallets, and applications will build around them. Result: liquidity fragmentation across multiple exchanges, no native marketplace, no yield, and dependency on external infrastructure that the issuer cannot control.
+
+**Marketplace-Only Approaches** (emerging traditional exchange initiatives): Major exchanges are building tokenized trading platforms but rely on existing settlement systems and stablecoins. They offer infrastructure without a native commodity-backed token, creating dependency on external assets.
+
+Neither approach delivers a complete solution. Users face fragmented experiences, unclear custody arrangements, and no mechanism to generate yield from their holdings.
+
+### 2.4 The Yield Vacuum
+
+Perhaps most significantly, existing gold tokens offer zero yield. Holders bear the opportunity cost of capital with no compensation. Meanwhile, the $55 billion trade finance market—where gold serves as a natural settlement and collateral asset—remains entirely disconnected from tokenized gold.
+
+This represents a massive missed opportunity: the infrastructure to connect gold-backed digital assets with real-world trade finance does not exist.
+
+### 2.5 Market Context
+
+These problems exist despite favorable conditions for gold-backed digital assets:
+
+- Gold prices reached record highs, with 66% gains in 2025 alone
+- Tokenized real-world asset (RWA) market projected to reach $30 trillion by 2034
+- Traditional exchanges (NASDAQ, NYSE, LSEG) actively building blockchain infrastructure
+- Regulatory frameworks crystallizing (MiCA in EU, CFTC guidance in US)
+
+The market is ready for gold-backed digital assets. What's missing is a solution that addresses these structural deficiencies with institutional-grade custody, verifiable backing, and real utility.
 
 ---
 
 ## 3. Solution Overview
 
-**Purpose:** Explain how AU Gold Block solves the identified problems
+STTAURX takes a fundamentally different approach: rather than creating a token and hoping an ecosystem develops around it, or building infrastructure that depends on external assets, we deliver a complete, closed-loop ecosystem where every component is designed to work together.
 
-### Content to Include:
-- [ ] Product description
-- [ ] How tokenization works
-- [ ] User benefits
-  - 24/7 trading
-  - Fractional ownership
-  - Instant settlement
-  - Global accessibility
-  - Full transparency
-  - Low fees
-- [ ] Platform components
-  - Wallet application
-  - Block explorer
-  - Admin/minting system
-  - Certificate verification
+### 3.1 The Integrated Ecosystem Model
 
-### Key Features Matrix:
-| Feature | Traditional Gold | Other Gold Tokens | AU Gold Block |
-|---------|-----------------|-------------------|---------------|
-| 24/7 Trading | ✗ | ✓ | ✓ |
-| Fractional Ownership | Limited | ✓ | ✓ |
-| HSBC Custody | ✗ | Varies | ✓ |
-| On-chain Certificates | ✗ | ✗ | ✓ |
-| Real-time Auditing | ✗ | ✗ | ✓ |
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    STTAURX CLOSED-LOOP ECOSYSTEM                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐         │
+│   │   GOLD   │    │ MARKET   │    │  WALLET  │    │ EXPLORER │         │
+│   │   TOKEN  │◄──►│  PLACE   │◄──►│   APP    │◄──►│  PORTAL  │         │
+│   └──────────┘    └──────────┘    └──────────┘    └──────────┘         │
+│        │               │               │               │                │
+│        └───────────────┴───────────────┴───────────────┘                │
+│                              │                                           │
+│                     ┌────────▼────────┐                                 │
+│                     │  STAKING YIELD  │                                 │
+│                     │ (Smart LC Fees) │                                 │
+│                     └─────────────────┘                                 │
+│                                                                          │
+│   • Token powers marketplace trading                                     │
+│   • Marketplace creates demand for tokens                               │
+│   • Staking enables trade finance (Smart Letters of Credit)             │
+│   • All components unified under single platform                        │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+This integrated approach ensures liquidity, utility, and user experience are controlled end-to-end—not dependent on third parties.
+
+### 3.2 Certificate-Triggered Minting via HSBC
+
+The core differentiator of STTAURX is how tokens come into existence. Unlike competitors who mint tokens from pooled reserves at their discretion, STTAURX tokens are created only when backed by a newly-issued HSBC custody certificate.
+
+**The Minting Flow:**
+
+```
+USER                    STTAURX                 HSBC                 GOLD BROKER
+  │                         │                      │                      │
+  │  1. Deposit USD         │                      │                      │
+  │ ───────────────────────>│                      │                      │
+  │                         │  2. Trust Account    │                      │
+  │                         │ ────────────────────>│                      │
+  │                         │                      │  3. Purchase @ Spot  │
+  │                         │                      │ ────────────────────>│
+  │                         │                      │  4. Gold Delivered   │
+  │                         │                      │ <────────────────────│
+  │                         │  5. Certificate      │                      │
+  │                         │ <────────────────────│                      │
+  │                         │  6. MINT TRIGGERED   │                      │
+  │  7. Receive Tokens      │                      │                      │
+  │ <───────────────────────│                      │                      │
+```
+
+**What This Means:**
+
+- **Your deposit triggers a real gold purchase** at that moment's spot price—not an allocation from existing reserves
+- **Gold is sourced from top-tier brokers** through HSBC's institutional relationships (the same supply chain used by central banks)
+- **HSBC issues a certificate** containing specific bar serial numbers, vault location, purity verification, and purchase price
+- **Tokens mint only upon certificate receipt**—no certificate, no tokens
+- **Every token traceable** to specific gold bars with serial numbers you can verify
+
+### 3.3 HSBC Custody: Institutional-Grade Security
+
+STTAURX tokens are backed by physical gold held in HSBC Trust Accounts. HSBC is a globally systemically important bank (G-SIB) with over $3 trillion in assets under custody globally.
+
+| Aspect | Competitor Model | STTAURX Model |
+|--------|-----------------|---------------|
+| **Custodian Type** | Crypto company vaults, specialized custodians | Tier-1 G-SIB bank (HSBC) |
+| **Regulatory Oversight** | Limited | Full banking regulation |
+| **Capital Reserves** | Variable | HSBC balance sheet |
+| **Audit Trail** | Quarterly attestations | Real-time certificate verification |
+| **Bankruptcy Protection** | Ambiguous | Segregated trust account |
+| **Gold Sourcing** | Unknown market purchases | Top-6 global broker via HSBC |
+
+The HSBC trust account structure ensures user assets are segregated from STTAURX operating funds, providing bankruptcy protection and clear legal ownership.
+
+### 3.4 Spot Price Locking
+
+When you deposit funds with STTAURX, gold is purchased at that moment's spot price. Your tokens represent gold acquired at YOUR purchase price—not a floating market price determined by exchange trading dynamics.
+
+This eliminates the premium/discount volatility that affects secondary market token purchases and ensures transparent, fair pricing for all participants.
+
+### 3.5 Staking Yield: Real Returns from Real Trade Finance
+
+STTAURX addresses the yield vacuum in gold tokens through integration with trade finance—specifically, Smart Letters of Credit.
+
+**How Staking Yield Works:**
+
+Large commodity trades between corporations and countries require Letters of Credit (LCs)—financial instruments that guarantee payment and delivery. Global LC-facilitated trade exceeds $3 trillion annually in transaction volume, generating $13+ billion in LC fees with typical rates of 1-2% per transaction.
+
+STTAURX enables token holders to stake their holdings, which serve as collateral backing Smart Letters of Credit. When trades complete successfully, LC fees are distributed to stakers proportionally.
+
+```
+Large Commodity Trade ($10M coffee shipment)
+                ↓
+Buyer needs Letter of Credit (payment guarantee)
+                ↓
+STTAURX stakers provide collateral for Smart LC
+                ↓
+Trade completes → LC fee (1-2% of transaction value)
+                ↓
+Fees distributed to stakers → Target 5% APY
+```
+
+**Why This Yield is Sustainable:**
+
+- Generated from real economic activity, not token inflation
+- Trade finance is a $55 billion market with consistent demand
+- Same fee structure banks have used for decades
+- Mexico office provides direct access to $550 billion China-Latin America trade corridor
+
+**Disclosure:** Yield is variable based on trade volume and is not guaranteed. See Risk Factors section.
+
+### 3.6 No Pre-Mine, No Team Allocation
+
+Every STTAURX token in circulation represents physical gold deposited by real users. There is no pre-mine, no team allocation, and no investor tokens.
+
+The founding team's incentives are aligned through equity ownership in the operating company, not through token holdings. This ensures the team benefits when the platform succeeds—not by extracting value from token holders.
+
+| Typical Crypto Approach | STTAURX Approach |
+|------------------------|------------------|
+| Pre-mine tokens for treasury | No pre-mine—all tokens = real gold |
+| Team token allocation | Team compensated via equity |
+| Investor token discounts | Investors receive equity, not tokens |
+| Airdrops for marketing | Fee rebates and staking bonuses |
+
+### 3.7 Platform Components
+
+**STTAURX Wallet.** Native wallet application for holding, sending, and staking STTAURX tokens. Integrated certificate verification allows users to view the specific gold bars backing their holdings.
+
+**STTAURX Marketplace.** B2B commodity trading platform enabling direct trading of gold-backed tokens. Built-in liquidity eliminates dependency on third-party exchanges.
+
+**STTAURX Explorer.** Full block explorer with administrative dashboard, transaction history, and real-time reserve verification.
+
+**Smart Letter of Credit Engine.** Trade finance infrastructure enabling stakers to participate in collateralizing international commodity trades.
+
+### 3.8 Competitive Positioning
+
+| Capability | PAXG/XAUT | NASDAQ/NYSE Tokenized | STTAURX |
+|-----------|-----------|----------------------|---------|
+| Native Gold Token | ✓ | ✗ | ✓ |
+| Native Marketplace | ✗ | ✓ (equities focus) | ✓ |
+| G-SIB Bank Custody | ✗ | N/A | ✓ |
+| Certificate-Triggered Minting | ✗ | N/A | ✓ |
+| Built-in Staking Yield | ✗ | ✗ | ✓ |
+| Trade Finance Integration | ✗ | ✗ | ✓ |
+| Multi-Asset Expansion | ✗ | ✓ | ✓ (Au, Ag, Pt, Pd) |
+
+STTAURX combines the best of both worlds: a gold-backed token with institutional custody AND a native ecosystem with real yield.
 
 ---
 
 ## 4. Market Opportunity
 
-**Purpose:** Demonstrate market size and growth potential
+STTAURX operates at the intersection of three converging markets: gold-backed digital assets, tokenized real-world assets (RWAs), and trade finance. Each represents a significant opportunity individually; together, they create a transformative market position.
 
-### Content to Include:
-- [ ] Total Addressable Market (TAM)
-  - Global gold market: ~$12 trillion
-  - Digital gold segment growth
+### 4.1 Gold-Backed Token Market
 
-- [ ] Serviceable Addressable Market (SAM)
-  - Tokenized gold market: ~$1 billion+
-  - Growing to $5B+ by 2030
+The gold-backed token market has grown to approximately **$6 billion** in 2026, quadrupling since the end of 2024. This growth reflects increasing demand for stable digital assets with tangible backing.
 
-- [ ] Serviceable Obtainable Market (SOM)
-  - Initial target regions
-  - User acquisition targets
+| Metric | 2024 | 2026 | Projection |
+|--------|------|------|------------|
+| Gold Token Market Cap | ~$1.5B | ~$6B | $20B+ (2030) |
+| Gold Price (per oz) | ~$2,700 | $4,500+ | $5,000 target |
+| YoY Gold Rally | — | +66% (2025) | Continued demand |
 
-- [ ] Competitive landscape
-  - PAXG (Paxos Gold)
-  - XAUT (Tether Gold)
-  - AWG (Aurus)
-  - Comparison table
+**Market Drivers:**
+- Central bank gold accumulation at record levels
+- Inflation hedge demand amid monetary expansion
+- Crypto market maturation favoring asset-backed tokens
+- Institutional adoption of digital gold products
 
-- [ ] Target demographics
-  - Retail crypto investors
-  - Traditional gold investors
-  - Institutional allocators
-  - Inflation hedgers
+### 4.2 Tokenized Real-World Asset (RWA) Market
+
+The broader RWA tokenization market provides significant tailwinds for STTAURX.
+
+| Metric | Current (2025) | Projection |
+|--------|----------------|------------|
+| Tokenized RWA Market | $24 billion | **$30 trillion by 2034** (Standard Chartered) |
+| Tokenized Money Market Funds | $9 billion | 3x growth in 12 months |
+| Annual Growth Rate | 40%+ | Accelerating |
+
+**Institutional Validation:**
+- **NASDAQ**: Filed for tokenized securities trading platform (September 2025), expected Q3 2026 launch
+- **NYSE**: Developing 24/7 blockchain trading platform, pending SEC approval
+- **LSEG**: Launched Digital Markets Infrastructure (January 2026)
+- **JPMorgan**: Launched MONY tokenized money market fund ($100M seed, December 2025)
+
+Traditional finance is moving to tokenization. STTAURX is positioned to capture the commodity-backed segment of this transition.
+
+### 4.3 Trade Finance Market
+
+The trade finance market represents STTAURX's core revenue opportunity through Smart Letter of Credit facilitation.
+
+| Segment | 2025 Market Size | CAGR | 2034 Projection |
+|---------|------------------|------|-----------------|
+| **Trade Finance (Total)** | $55.3 billion | 4.76% | $84.1 billion |
+| **Letter of Credit Segment** | $13+ billion | 3.4-5.2% | $16+ billion |
+| **Commodity Trade LCs** | $5+ billion | — | Target segment |
+| **Trade Credit Insurance** | $12.6 billion | 4.8-10.7% | $23-45 billion |
+
+**Why Letters of Credit Matter:**
+
+Letters of Credit represent 24%+ of the trade finance market and are essential for high-value, cross-border commodity transactions. Every major commodity trade—oil, gold, copper, soybeans, iron ore—typically requires LC facilitation.
+
+| Commodity | Annual Trade Value | LC Usage |
+|-----------|-------------------|----------|
+| Oil & Gas | $2+ trillion | 95% |
+| Gold | $400-500 billion | 90% |
+| Copper | $200+ billion | 85% |
+| Soybeans | $80+ billion | 80% |
+
+### 4.4 China-Latin America Trade Corridor
+
+STTAURX's Mexico office provides strategic access to one of the world's fastest-growing trade corridors.
+
+```
+                         ┌─────────────────┐
+                         │      CHINA      │
+                         │   $6.54T Trade  │
+                         │    (#1 Global)  │
+                         └────────┬────────┘
+                                  │
+                    $550 Billion │ +6.5% YoY Growth
+                                  │
+                                  ▼
+                         ┌─────────────────┐
+                         │  LATIN AMERICA  │
+                         │  (Fastest-Growing│
+                         │   Corridor)     │
+                         └────────┬────────┘
+                                  │
+               ┌──────────────────┼──────────────────┐
+               │                  │                  │
+               ▼                  ▼                  ▼
+       ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+       │   MEXICO    │    │   BRAZIL    │    │   CHILE     │
+       │  $139.7B    │    │   $180B+    │    │   $55B      │
+       │   +8.2%     │    │  (Largest)  │    │  (Copper)   │
+       └─────────────┘    └─────────────┘    └─────────────┘
+```
+
+**Mexico Strategic Value:**
+
+| Factor | Value | Opportunity |
+|--------|-------|-------------|
+| Mexico-China Trade | $139.7 billion | Direct LC demand |
+| YoY Growth | +8.2% | Fastest in region |
+| Trade Deficit | $120 billion | Financing requirement |
+| USMCA Access | $800B+ US-Mexico trade | Gateway to North America |
+| Nearshoring Boom | Chinese factories relocating | Growing manufacturing base |
+
+**Total Accessible Market from Mexico Office: $1.5+ trillion in trade flows**
+
+### 4.5 Addressable Market Analysis
+
+```
+TOTAL ADDRESSABLE MARKET (TAM)
+├── Global Trade: $32+ trillion
+├── Trade Finance Market: $55.3 billion
+└── Letter of Credit Segment: $13+ billion
+
+SERVICEABLE ADDRESSABLE MARKET (SAM)
+├── Commodity Trade LCs: $5+ billion
+├── Digital/Blockchain LC Growth: 15-20% annually
+└── Target: $800M+ digitized LC market (2026)
+
+SERVICEABLE OBTAINABLE MARKET (SOM)
+├── Year 1 Target: 0.1% = $13 million in LC fees
+├── Year 3 Target: 0.5% = $65 million in LC fees
+├── Year 5 Target: 1.0% = $130 million in LC fees
+└── China-LatAm Corridor: $550B direct access via Mexico
+```
+
+### 4.6 Competitive Landscape
+
+**Gold-Backed Token Competitors:**
+
+| Token | Market Cap | Custodian | Yield | Marketplace |
+|-------|-----------|-----------|-------|-------------|
+| **PAXG** (Paxos) | $600M+ | Paxos Trust + Brink's | None | None |
+| **XAUT** (Tether) | $700M+ | Swiss vaults | None | None |
+| **AWG** (Aurus) | <$50M | Multiple mints | None | Limited |
+| **STTAURX** | Launch | HSBC (G-SIB) | 5% APY | Native |
+
+**Traditional Finance Entrants:**
+
+| Player | Initiative | Limitation |
+|--------|------------|------------|
+| NASDAQ | Tokenized securities | No native commodity token |
+| NYSE | 24/7 blockchain trading | Equity-focused, not commodities |
+| LSEG | Digital Markets Infrastructure | Infrastructure only |
+| JPMorgan | MONY tokenized fund | Treasury-backed, $1M minimum |
+
+**STTAURX Positioning:**
+
+STTAURX is the only solution combining:
+- Institutional-grade custody (HSBC)
+- Certificate-triggered minting with spot price locking
+- Native marketplace with built-in liquidity
+- Staking yield from real trade finance activity
+- Direct access to $550B+ trade corridor
+
+### 4.7 Target Users
+
+**Primary Segments:**
+
+1. **Commodity Traders & Corporations**
+   - Need: Efficient trade finance, transparent settlement
+   - Value: Smart LCs reduce costs, accelerate transactions
+
+2. **Gold Investors (Retail & Institutional)**
+   - Need: Trusted gold exposure with yield
+   - Value: HSBC custody + 5% staking APY
+
+3. **Trade Finance Providers**
+   - Need: New yield opportunities in stable assets
+   - Value: Participate in LC collateralization
+
+4. **Crypto Native Users**
+   - Need: Stable, yield-bearing asset
+   - Value: Gold backing + DeFi integration potential
 
 ---
 
@@ -210,42 +499,205 @@ the stability of precious metals with the efficiency of digital assets.
 
 ## 6. Tokenomics
 
-**Purpose:** Explain token economics and distribution
+STTAURX tokenomics are designed around a fundamental principle: every token must represent real gold, and team incentives must align with platform success rather than token extraction.
 
-### Content to Include:
+### 6.1 Token Specifications
 
-#### 6.1 Token Details
 | Attribute | Value |
 |-----------|-------|
-| Name | AU Gold |
-| Symbol | GOLD |
-| Decimals | 18 |
-| Type | Asset-backed |
-| Backing | 1 GOLD = 1 gram physical gold |
-| Max Supply | Dynamic (based on gold deposits) |
+| **Name** | STTAURX Gold |
+| **Symbol** | STTAURX |
+| **Backing** | 1 token = 1 gram physical gold |
+| **Decimals** | 18 |
+| **Supply Model** | Dynamic (mint on deposit, burn on redemption) |
+| **Maximum Supply** | Unlimited (grows with gold deposits) |
+| **Custodian** | HSBC Trust Account |
 
-#### 6.2 Token Utility
-- [ ] Store of value (gold price exposure)
-- [ ] Medium of exchange
-- [ ] Collateral in DeFi (future)
-- [ ] Redemption for physical gold
+### 6.2 The No-Allocation Principle
 
-#### 6.3 Minting & Burning
-- [ ] Minting process (deposit gold → receive tokens)
-- [ ] Burning process (redeem tokens → receive gold/fiat)
-- [ ] Fee structure
+Unlike speculative cryptocurrencies, STTAURX tokens are not pre-mined, allocated to insiders, or distributed via airdrops. Every token in circulation represents physical gold deposited by real users.
 
-#### 6.4 Fee Structure
-| Action | Fee | Recipient |
-|--------|-----|-----------|
-| Minting | 0.5% | Platform |
-| Transfer | 0.1% | Platform |
-| Redemption | 1.0% | Platform + Custodian |
+| Typical Crypto Approach | STTAURX Approach | Rationale |
+|------------------------|------------------|-----------|
+| Pre-mine tokens for treasury | **No pre-mine** | All tokens must be backed by gold |
+| Team token allocation (10-20%) | **No team tokens** | Team compensated via equity |
+| Investor token discounts | **No discounted tokens** | Investors receive equity, not tokens |
+| Airdrops for marketing | **No airdrops** | Use fee incentives instead |
 
-#### 6.5 Reserve Ratio
-- [ ] 100% gold backing guarantee
-- [ ] Proof of reserves methodology
-- [ ] Audit frequency
+**Why This Matters:**
+
+In a gold-backed system, every token given away equals gold given away. Traditional crypto allocation mechanisms don't translate when tokens have real asset backing. The STTAURX approach ensures:
+
+- **100% backing integrity** — Every circulating token has corresponding gold
+- **No insider advantages** — No one receives tokens at below-market value
+- **Aligned incentives** — Team succeeds when the platform succeeds, not from token sales
+
+**Team Alignment Statement:**
+
+> "The founding team's incentives are aligned through equity ownership in the operating company, not through token holdings. We benefit when STTAURX succeeds as a business—when trading volumes increase, when staking grows, when Smart LCs facilitate real trade. We do not benefit from token price speculation."
+
+### 6.3 Token Utility
+
+STTAURX tokens serve multiple functions within the ecosystem:
+
+**1. Gold Ownership**
+- Direct exposure to physical gold price
+- Each token represents allocated gold with traceable serial numbers
+- Redeemable for physical gold or fiat equivalent
+
+**2. Medium of Exchange**
+- Peer-to-peer transfers with blockchain settlement
+- Marketplace trading on native platform
+- Cross-border value transfer with gold stability
+
+**3. Staking Collateral**
+- Stake tokens to participate in Smart Letter of Credit facilitation
+- Earn proportional share of LC fees (target 5% APY)
+- Support real-world commodity trade
+
+**4. Future DeFi Integration**
+- Collateral for lending protocols
+- Liquidity provision in decentralized exchanges
+- Cross-chain bridge compatibility
+
+### 6.4 Minting Mechanism
+
+Tokens are minted only through the certificate-triggered process described in Section 3.2.
+
+```
+User Deposits USD
+       ↓
+HSBC Receives Funds (Trust Account)
+       ↓
+HSBC Purchases Gold at Spot Price
+       ↓
+Gold Delivered to HSBC Vault
+       ↓
+HSBC Issues Custody Certificate
+       ↓
+Certificate Hash Recorded On-Chain
+       ↓
+Tokens Minted (1 token = 1 gram)
+       ↓
+Tokens Credited to User Wallet
+```
+
+**Key Properties:**
+- No discretionary minting — certificates required
+- Spot price locking — user receives tokens at their purchase price
+- Real-time verification — certificate data on-chain
+
+### 6.5 Redemption Mechanism
+
+Token holders may redeem for physical gold or fiat equivalent:
+
+**Physical Gold Redemption:**
+- Minimum: 100 grams (approximately 3.2 oz)
+- Timeline: 5-10 business days
+- Delivery: LBMA Good Delivery bars to specified location
+- User pays shipping and handling
+
+**Fiat Redemption:**
+- Minimum: 10 grams
+- Timeline: 2-3 business days
+- Settlement: Bank transfer at current spot price
+- Available currencies: USD, EUR, GBP
+
+Upon redemption, tokens are burned and the corresponding certificate is marked as redeemed.
+
+### 6.6 Fee Structure
+
+| Action | Fee | Recipient | Notes |
+|--------|-----|-----------|-------|
+| **Minting** | 0.5% | Platform | One-time on deposit |
+| **Transfer** | 0.1% | Platform | Peer-to-peer sends |
+| **Marketplace Trade** | 0.25% | Platform | Buy/sell on marketplace |
+| **Redemption (Fiat)** | 1.0% | Platform + HSBC | Covers processing |
+| **Redemption (Physical)** | 1.5% | Platform + HSBC + Logistics | Includes delivery |
+| **Staking Entry** | 0% | — | No fee to stake |
+| **Staking Withdrawal** | 0% | — | No penalty |
+
+**Fee Competitiveness:**
+
+| Action | PAXG | STTAURX | Advantage |
+|--------|------|---------|-----------|
+| Creation | 0.03%+1 oz min | 0.5% (no min) | Lower barrier to entry |
+| Transfer | 0.02% | 0.1% | PAXG lower |
+| Redemption | 0.2%+ | 1.0% | Higher service level |
+
+While some individual fees are higher than PAXG, STTAURX provides: HSBC custody, staking yield, native marketplace, and certificate verification—value not available from competitors.
+
+### 6.7 Staking Yield Model
+
+Staking yield is generated through Smart Letter of Credit facilitation, not token inflation.
+
+**How Staking Works:**
+
+1. User stakes STTAURX tokens (no lock-up period, withdraw anytime)
+2. Staked tokens serve as collateral pool for Smart LCs
+3. When commodity trades execute, LC fees (typically 1-2%) are collected
+4. Fees distributed to stakers proportionally based on stake size
+5. Yield compounds automatically or can be withdrawn
+
+**Yield Calculation Example:**
+
+```
+Assumptions:
+- Total Staked Pool: $100 million in STTAURX
+- Annual Trade Volume via Smart LCs: $2 billion
+- Average LC Fee: 1.5%
+- Platform Share: 50% (remainder to stakers)
+
+Calculation:
+- Total LC Fees: $2B × 1.5% = $30 million
+- Staker Share: $30M × 50% = $15 million
+- Gross APY: $15M ÷ $100M = 15%
+- After Operating Costs: ~5% APY distributed to stakers
+```
+
+**Yield Disclosure:**
+
+Staking yield is **variable and not guaranteed**. Returns depend on:
+- Trade volume through the Smart LC platform
+- Number of stakers (yield diluted as pool grows)
+- Fee rates negotiated with trade counterparties
+- Market conditions affecting commodity trade
+
+See Section 13 (Risk Factors) for complete disclosure.
+
+### 6.8 Reserve Verification
+
+**100% Gold Backing Guarantee:**
+
+Every STTAURX token is backed by physical gold held in HSBC custody. This is verifiable through:
+
+1. **Certificate Lookup** — Each token traceable to specific certificate
+2. **On-Chain Audit Trail** — All minting/burning recorded on blockchain
+3. **Real-Time Reserve Dashboard** — Public display of total tokens vs. certified gold
+4. **Quarterly Third-Party Audit** — Independent verification by major accounting firm
+
+**Proof of Reserves:**
+
+| Method | Frequency | Transparency |
+|--------|-----------|--------------|
+| Certificate Registry | Real-time | Full on-chain |
+| Reserve Dashboard | Real-time | Public |
+| HSBC Statements | Monthly | Summary published |
+| Independent Audit | Quarterly | Full report published |
+
+Unlike competitors who provide periodic attestations, STTAURX enables continuous verification: users can trace their specific tokens to specific certificates to specific gold bars at any time.
+
+### 6.9 Platform Liquidity
+
+While no tokens are pre-allocated, the platform maintains operational liquidity through company-purchased reserves:
+
+| Purpose | Source | Use |
+|---------|--------|-----|
+| **Marketplace Liquidity** | Company capital | Buy/sell depth on native marketplace |
+| **Redemption Buffer** | Company capital | Smooth redemption processing |
+| **Smart LC Seed Pool** | Company capital | Initial LC facilitation capacity |
+
+These reserves are purchased at full market price, backed by real gold, and segregated from user deposits. They ensure platform functionality without compromising the no-allocation principle.
 
 ---
 

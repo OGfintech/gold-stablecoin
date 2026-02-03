@@ -13,3 +13,45 @@
 [03:06:40.647] Server  LOG     ✓ Compiled in 91ms
 [03:06:44.238] Server  LOG     ✓ Compiled in 129ms
 [03:06:47.880] Server  LOG     ✓ Compiled in 139ms
+[03:36:10.556] Server  LOG     ✓ Compiled in 186ms
+[03:36:14.695] Server  LOG     ✓ Compiled in 75ms
+[03:36:21.485] Server  LOG     ✓ Compiled in 85ms
+[03:36:26.795] Server  LOG     ✓ Compiled in 133ms
+[03:36:30.684] Server  LOG     ✓ Compiled in 87ms
+[03:36:35.434] Server  LOG     ✓ Compiled in 116ms
+[04:22:02.627] Browser ERROR   In HTML, %s cannot be a child of <%s>.%s
+This will cause a hydration error.%s <html> main  
+
+  ...
+    <DevRootHTTPAccessFallbackBoundary>
+      <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+        <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} forbidden={undefined} ...>
+          <RedirectBoundary>
+            <RedirectErrorBoundary router={{...}}>
+              <Head>
+              <__next_root_layout_boundary__>
+                <SegmentViewNode type="layout" pagePath="layout.tsx">
+                  <SegmentTrieNode>
+                  <link>
+                  <script>
+                  <script>
+                  <script>
+                  <RootLayout>
+                    <html lang="en">
+                      <body className="inter_5972...">
+                        <Providers>
+                          <QueryClientProvider client={{}}>
+                            <AuthProvider>
+                              <Navigation>
+>                             <main className="container mx-auto px-4 py-8">
+                                ...
+                                  <SegmentViewNode type="layout" pagePath="(portal)/l...">
+                                    <SegmentTrieNode>
+                                    <PortalLayout>
+>                                     <html lang="en">
+              ...
+
+[04:22:02.627] Browser ERROR   <%s> cannot contain a nested %s.
+See this log for the ancestor stack trace. main <html>
+[04:22:02.627] Browser ERROR   You are mounting a new %s component when a previous one has not first unmounted. It is an error to render more than one %s component at a time and attributes and children of these components will likely fail in unpredictable ways. Please only render a single instance of <%s> and if you need to mount a new one, ensure any previous ones have unmounted first. html html html
+[04:22:02.627] Browser ERROR   You are mounting a new %s component when a previous one has not first unmounted. It is an error to render more than one %s component at a time and attributes and children of these components will likely fail in unpredictable ways. Please only render a single instance of <%s> and if you need to mount a new one, ensure any previous ones have unmounted first. body body body

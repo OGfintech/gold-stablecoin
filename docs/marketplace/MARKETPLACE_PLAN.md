@@ -296,9 +296,9 @@ cd marketplace && npm run dev
 
 ## Related Documents
 
-- [ONBOARDING_BUCKETS.md](./ONBOARDING_BUCKETS.md) - Full user journey
-- [WHITEPAPER.md](./WHITEPAPER.md) - Project overview
-- [whitepaper/WHITEPAPER_FULL.md](./whitepaper/WHITEPAPER_FULL.md) - Detailed whitepaper
+- [ONBOARDING_BUCKETS.md](../blockchain/ONBOARDING_BUCKETS.md) - Full user journey
+- [WHITEPAPER.md](../whitepaper/WHITEPAPER.md) - Project overview
+- [WHITEPAPER_FULL.md](../whitepaper/WHITEPAPER_FULL.md) - Detailed whitepaper
 
 ---
 
