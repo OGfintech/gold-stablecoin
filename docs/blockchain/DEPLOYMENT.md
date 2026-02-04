@@ -10,7 +10,7 @@
 | Item | Value |
 |------|-------|
 | **Provider** | DigitalOcean |
-| **IP Address** | 146.190.149.27 |
+| **IP Address** | 164.92.116.28 |
 | **User** | root |
 | **Project Path** | /var/www/gold-stablecoin |
 | **GitHub Repo** | https://github.com/OGfintech/gold-stablecoin.git |
@@ -21,7 +21,7 @@
 
 ### SSH Into Droplet
 ```bash
-ssh root@146.190.149.27
+ssh root@164.92.116.28
 ```
 
 ### Deploy (Full)
@@ -50,11 +50,11 @@ ssh root@146.190.149.27
 
 | Service | Port | URL |
 |---------|------|-----|
-| **Security Portal** | 3000 | http://146.190.149.27:3000/start |
-| **Explorer** | 3000 | http://146.190.149.27:3000 |
-| **Wallet** | 3002 | http://146.190.149.27:3002 |
-| **Marketplace** | 3003 | http://146.190.149.27:3003 |
-| **API** | 3001 | http://146.190.149.27:3001 |
+| **Security Portal** | 3000 | http://164.92.116.28:3000/start |
+| **Explorer** | 3000 | http://164.92.116.28:3000 |
+| **Wallet** | 3002 | http://164.92.116.28:3002 |
+| **Marketplace** | 3003 | http://164.92.116.28:3003 |
+| **API** | 3001 | http://164.92.116.28:3001 |
 
 ---
 
@@ -67,7 +67,7 @@ If you haven't already, add your SSH key to the droplet:
 cat ~/.ssh/id_rsa.pub
 
 # Then add it to DigitalOcean dashboard
-# Or: ssh-copy-id root@146.190.149.27
+# Or: ssh-copy-id root@164.92.116.28
 ```
 
 ### 2. Setup Droplet
@@ -92,7 +92,7 @@ This installs:
 
 ```bash
 # SSH into server first
-ssh root@146.190.149.27
+ssh root@164.92.116.28
 cd /var/www/gold-stablecoin
 
 # Start all services
@@ -139,7 +139,7 @@ git push origin main
 ### 2. Pull on Server
 ```bash
 # SSH into server
-ssh root@146.190.149.27
+ssh root@164.92.116.28
 cd /var/www/gold-stablecoin
 git pull origin main
 ```
@@ -165,10 +165,10 @@ pm2 restart all
 ### Cannot Connect via SSH
 ```bash
 # Check if you can ping the server
-ping 146.190.149.27
+ping 164.92.116.28
 
 # Try with verbose mode
-ssh -v root@146.190.149.27
+ssh -v root@164.92.116.28
 
 # Make sure your SSH key is added
 ssh-add ~/.ssh/id_rsa
@@ -177,7 +177,7 @@ ssh-add ~/.ssh/id_rsa
 ### Services Not Starting
 ```bash
 # SSH into server and check logs
-ssh root@146.190.149.27
+ssh root@164.92.116.28
 cd /var/www/gold-stablecoin
 pm2 logs --lines 50
 
@@ -231,9 +231,9 @@ If you need environment variables, create `.env.production` files:
 cd /var/www/gold-stablecoin
 
 # For each app that needs env vars
-echo "API_URL=http://146.190.149.27:3001" > explorer/.env.production
-echo "API_URL=http://146.190.149.27:3001" > wallet/.env.production
-echo "API_URL=http://146.190.149.27:3001" > marketplace/.env.production
+echo "API_URL=http://164.92.116.28:3001" > explorer/.env.production
+echo "API_URL=http://164.92.116.28:3001" > wallet/.env.production
+echo "API_URL=http://164.92.116.28:3001" > marketplace/.env.production
 ```
 
 ---
@@ -300,7 +300,7 @@ tar -czf backup-$(date +%Y%m%d).tar.gz mock-server/data/
 ### Download Backup
 ```bash
 # On local machine
-scp root@146.190.149.27:/var/www/gold-stablecoin/backup-*.tar.gz ./backups/
+scp root@164.92.116.28:/var/www/gold-stablecoin/backup-*.tar.gz ./backups/
 ```
 
 ---

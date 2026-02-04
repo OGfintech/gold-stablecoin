@@ -2,7 +2,7 @@
 
 **Created:** February 3, 2026
 **Purpose:** Context for deployment work in a new session
-**Target:** DigitalOcean Droplet (146.190.149.27)
+**Target:** DigitalOcean Droplet (164.92.116.28)
 
 ---
 
@@ -10,7 +10,7 @@
 
 Copy this into your new session to provide context:
 
-> "I'm working on STTAURX deployment to DigitalOcean droplet (146.190.149.27). Deployment scripts created: `./scripts/deploy.sh` and `ecosystem.config.js` for PM2. Read `/docs/blockchain/DEPLOYMENT_HANDOFF.md` for full context."
+> "I'm working on STTAURX deployment to DigitalOcean droplet (164.92.116.28). Deployment scripts created: `./scripts/deploy.sh` and `ecosystem.config.js` for PM2. Read `/docs/blockchain/DEPLOYMENT_HANDOFF.md` for full context."
 
 ---
 
@@ -19,7 +19,7 @@ Copy this into your new session to provide context:
 | Item | Value |
 |------|-------|
 | **Provider** | DigitalOcean |
-| **IP Address** | 146.190.149.27 |
+| **IP Address** | 164.92.116.28 |
 | **SSH User** | root |
 | **Project Path** | /var/www/gold-stablecoin |
 | **GitHub Repo** | https://github.com/OGfintech/gold-stablecoin.git |
@@ -48,7 +48,7 @@ Copy this into your new session to provide context:
 
 ### SSH Into Droplet
 ```bash
-ssh root@146.190.149.27
+ssh root@164.92.116.28
 ```
 
 ### On Droplet (PM2 Commands)
@@ -77,11 +77,11 @@ pm2 save                         # Save state
 
 | Service | Port | URL |
 |---------|------|-----|
-| Security Portal | 3000 | http://146.190.149.27:3000/start |
-| Explorer | 3000 | http://146.190.149.27:3000 |
-| Wallet | 3002 | http://146.190.149.27:3002 |
-| Marketplace | 3003 | http://146.190.149.27:3003 |
-| API | 3001 | http://146.190.149.27:3001 |
+| Security Portal | 3000 | http://164.92.116.28:3000/start |
+| Explorer | 3000 | http://164.92.116.28:3000 |
+| Wallet | 3002 | http://164.92.116.28:3002 |
+| Marketplace | 3003 | http://164.92.116.28:3003 |
+| API | 3001 | http://164.92.116.28:3001 |
 
 ---
 
@@ -95,10 +95,21 @@ pm2 save                         # Save state
 
 ---
 
+## ⚠️ Known Issues
+
+### Marketplace: `/buyer/orders/new` Build Warning
+- **Issue:** `useSearchParams()` should be wrapped in a Suspense boundary
+- **Impact:** The service runs but the `/buyer/orders/new` page may have issues
+- **Fix:** Wrap the component using `useSearchParams()` in `<Suspense>`
+- **File:** `marketplace/src/app/buyer/orders/new/page.tsx`
+- **Reference:** https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+
+---
+
 ## 🔜 Potential Next Steps
 
 1. **Test SSH Connection**
-   - Verify `ssh root@146.190.149.27` works
+   - Verify `ssh root@164.92.116.28` works
    - Add SSH key if needed
 
 2. **Initial Droplet Setup**

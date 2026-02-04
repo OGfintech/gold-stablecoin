@@ -10,10 +10,12 @@
 #
 
 # Configuration
-DROPLET_IP="146.190.149.27"
+DROPLET_IP="164.92.116.28"
 DROPLET_USER="root"
 REMOTE_PATH="/var/www/gold-stablecoin"
 LOCAL_PATH="$(cd "$(dirname "$0")/.." && pwd)"
+SSH_KEY="$HOME/.ssh/digitalocean"
+SSH_OPTS="-i ${SSH_KEY}"
 
 # Colors
 RED='\033[0;31m'
@@ -29,7 +31,7 @@ echo ""
 # Check SSH connection
 check_connection() {
     echo -e "${YELLOW}Checking SSH connection to droplet...${NC}"
-    if ssh -o ConnectTimeout=5 ${DROPLET_USER}@${DROPLET_IP} "echo 'Connected'" 2>/dev/null; then
+    if ssh ${SSH_OPTS} -o ConnectTimeout=5 ${DROPLET_USER}@${DROPLET_IP} "echo 'Connected'" 2>/dev/null; then
         echo -e "${GREEN}✓ SSH connection successful${NC}"
         return 0
     else
@@ -45,7 +47,7 @@ check_connection() {
 # Restart services on droplet
 restart_services() {
     echo -e "${YELLOW}Restarting services on droplet...${NC}"
-    ssh ${DROPLET_USER}@${DROPLET_IP} << 'EOF'
+    ssh ${SSH_OPTS} ${DROPLET_USER}@${DROPLET_IP} << 'EOF'
 cd /var/www/gold-stablecoin
 pm2 restart all || pm2 start ecosystem.config.js
 pm2 save
@@ -58,6 +60,7 @@ quick_sync() {
     echo -e "${YELLOW}Syncing files to droplet...${NC}"
 
     rsync -avz --progress \
+        -e "ssh ${SSH_OPTS}" \
         --exclude 'node_modules' \
         --exclude '.next' \
         --exclude '.git' \
@@ -77,7 +80,7 @@ full_deploy() {
 
     # Step 2: Install dependencies and build on server
     echo -e "${YELLOW}Installing dependencies and building on server...${NC}"
-    ssh ${DROPLET_USER}@${DROPLET_IP} << 'EOF'
+    ssh ${SSH_OPTS} ${DROPLET_USER}@${DROPLET_IP} << 'EOF'
 cd /var/www/gold-stablecoin
 
 echo "Installing mock-server dependencies..."
@@ -115,7 +118,7 @@ EOF
 # Setup droplet from scratch
 setup_droplet() {
     echo -e "${YELLOW}Setting up droplet from scratch...${NC}"
-    ssh ${DROPLET_USER}@${DROPLET_IP} << 'EOF'
+    ssh ${SSH_OPTS} ${DROPLET_USER}@${DROPLET_IP} << 'EOF'
 # Update system
 apt update && apt upgrade -y
 
@@ -141,7 +144,7 @@ EOF
 # Show status
 show_status() {
     echo -e "${YELLOW}Checking droplet status...${NC}"
-    ssh ${DROPLET_USER}@${DROPLET_IP} << 'EOF'
+    ssh ${SSH_OPTS} ${DROPLET_USER}@${DROPLET_IP} << 'EOF'
 echo "=== PM2 Status ==="
 pm2 status
 

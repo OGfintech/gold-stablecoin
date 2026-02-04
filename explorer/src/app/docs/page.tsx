@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { FileText, Book, Rocket, Users, Shield, ChevronRight, ExternalLink, CheckCircle, Clock, AlertCircle, ScrollText, ShoppingCart, Lock, Mic, Building2, ClipboardList, Coins, Globe, TrendingUp } from 'lucide-react'
+import { FileText, Book, Rocket, Users, Shield, ChevronRight, ExternalLink, CheckCircle, Clock, AlertCircle, ScrollText, ShoppingCart, Lock, Mic, Building2, ClipboardList, Coins, Globe, TrendingUp, Database, Server } from 'lucide-react'
 
 interface DocItem {
   id: string
@@ -257,6 +257,98 @@ const docs: DocItem[] = [
       'Phase 2: Admin UI (/admin/security)',
       'Phase 3: Start Page API Integration',
       'Phase 4: Testing & Polish'
+    ]
+  },
+  {
+    id: 'database-plan',
+    title: 'Database Architecture Plan',
+    description: 'PostgreSQL + Redis 4-phase database implementation roadmap',
+    icon: <Database className="w-6 h-6" />,
+    status: 'complete',
+    fileName: 'blockchain/database/DATABASE_PLAN.md',
+    sections: [
+      'Architecture Diagram ✓',
+      'Phase 1: Users & Wallets Schema ✓',
+      'Phase 2: Marketplace & Orders Schema ✓',
+      'Phase 3: Admin & Analytics Schema ✓',
+      'Phase 4: Notifications & Messaging ✓',
+      'Redis Cache Strategy ✓',
+      'Migration Strategy ✓',
+      'Backup Strategy ✓'
+    ]
+  },
+  {
+    id: 'database-implementation',
+    title: 'Database Implementation Plan',
+    description: 'Phase 1 implementation with security protocols and Rust compatibility',
+    icon: <Server className="w-6 h-6" />,
+    status: 'planning',
+    fileName: 'blockchain/database/DATABASE_IMPLEMENTATION_PLAN.md',
+    sections: [
+      'Mock Data Testing (Hybrid Mode)',
+      'Rust Compatibility (RocksDB + PostgreSQL)',
+      'Security Protocols (6 Layers)',
+      'SQL Injection Prevention (Prisma)',
+      'JWT + Refresh Token Auth',
+      'Implementation Phases (1A, 1B, 1C)',
+      'Files Created (schema, db.js, seeds)',
+      'Approval Checklist'
+    ]
+  },
+  {
+    id: 'database-setup',
+    title: 'Database Setup Guide',
+    description: 'Deployment instructions for PostgreSQL + Redis on droplet',
+    icon: <Database className="w-6 h-6" />,
+    status: 'complete',
+    fileName: 'blockchain/database/DATABASE_SETUP.md',
+    sections: [
+      'Quick Start (Local Dev) ✓',
+      'Production Deployment Steps ✓',
+      'Database Commands Reference ✓',
+      'Phase 1 Schema (11 Tables) ✓',
+      'Redis Cache Strategy ✓',
+      'Security Checklist ✓',
+      'Backup Commands ✓',
+      'Troubleshooting ✓'
+    ]
+  },
+  {
+    id: 'deployment-environments',
+    title: 'Deployment Environments',
+    description: 'Local → Testnet (100 users) → Mainnet pipeline',
+    icon: <Server className="w-6 h-6" />,
+    status: 'complete',
+    fileName: 'blockchain/database/DEPLOYMENT_ENVIRONMENTS.md',
+    sections: [
+      'Pipeline Diagram (3 Stages) ✓',
+      'Environment Configuration ✓',
+      'Testnet Setup (Port 4001, 100 users) ✓',
+      'Mainnet Setup (Port 3001, scalable) ✓',
+      'User Limit Enforcement ✓',
+      'PM2 Configuration ✓',
+      'Scaling Guide (Future) ✓',
+      'Checklist: Moving Through Pipeline ✓'
+    ]
+  },
+  {
+    id: 'security-hardening',
+    title: 'Security Hardening Proposal',
+    description: 'Red Team Analysis fixes - 7 vulnerabilities addressed',
+    icon: <Shield className="w-6 h-6" />,
+    status: 'in_progress',
+    fileName: 'blockchain/database/SECURITY_HARDENING_PROPOSAL.md',
+    sections: [
+      'Issue #1: Mock Data Leakage (CRITICAL) ✓',
+      'Issue #2: Single Point of Failure ✓',
+      'Issue #3: JWT Revocation Missing ✓',
+      'Issue #4: RBAC Not Granular ✓',
+      'Issue #5: Bcrypt Cost Factor ✓',
+      'Issue #6: KYC Encryption (CRITICAL) ✓',
+      'Issue #7: Audit Log Mutability ✓',
+      'Implementation Priority Matrix ✓',
+      'Files Created (7 new files) ✓',
+      'Approval Checklist'
     ]
   }
 ]
@@ -584,6 +676,100 @@ export default function DocsPage() {
           <div className="flex items-center justify-between">
             <span className="text-gray-300">Admin Voice Phrase Controls</span>
             <span className="text-blue-400">◐ Planned</span>
+          </div>
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <h3 className="text-lg font-medium text-white mb-3">Database Infrastructure</h3>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Database Architecture Plan (4 Phases)</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Prisma Schema (11 Tables)</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Database Connection Layer (db.js)</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Redis Cache + Pub/Sub</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Setup Script (PostgreSQL + Redis)</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Seed Data (Demo Users)</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Implementation Plan (PDF)</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Phase 1A: Service Factory (Mock Mode)</span>
+            <span className="text-blue-400">◐ Awaiting Approval</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Phase 1B: Database Integration</span>
+            <span className="text-gray-500">○ Not Started</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Phase 1C: Security Hardening</span>
+            <span className="text-yellow-400">◐ In Progress</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Rust SQLx Integration</span>
+            <span className="text-gray-500">○ Future Phase</span>
+          </div>
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <h3 className="text-lg font-medium text-white mb-3">Security Hardening (Red Team Fixes)</h3>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Red Team Vulnerability Analysis</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Security Hardening Proposal (PDF)</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Schema Update (Encryption Fields)</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">AES-256-GCM Encryption Utility</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Bcrypt Cost 14 Security Utils</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">JWT Token Blacklist Middleware</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">RBAC Granular Permissions</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Hash-Chained Audit Log Service</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">PostgreSQL Audit Triggers</span>
+            <span className="text-green-400">✓ Complete</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">Mock Data Leakage Fix (P0)</span>
+            <span className="text-blue-400">◐ Awaiting Approval</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-gray-300">KYC Document Encryption (P0)</span>
+            <span className="text-blue-400">◐ Awaiting Approval</span>
           </div>
         </div>
       </div>

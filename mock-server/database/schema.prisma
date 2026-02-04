@@ -1,0 +1,400 @@
+// STTAURX Database Schema - Phase 1 (Security Hardened)
+// PostgreSQL with Prisma ORM
+// Based on Third-Party Security Audit - February 2026
+// =========================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// PHASE 1: USERS & AUTHENTICATION
+// Security: Added MFA, enhanced roles, token versioning
+// ============================================
+
+model User {
+  id             String    @id @default(uuid()) @db.Uuid
+  email          String    @unique @db.VarChar(255)
+  passwordHash   String    @map("password_hash") @db.VarChar(255)
+  fullName       String?   @map("full_name") @db.VarChar(255)
+  phone          String?   @db.VarChar(50)
+  role           UserRole  @default(CLIENT)
+  status         UserStatus @default(PENDING)
+  emailVerified  Boolean   @default(false) @map("email_verified")
+  kycStatus      KycStatus @default(NONE) @map("kyc_status")
+
+  // SECURITY HARDENING: MFA Support
+  isMfaEnabled   Boolean   @default(false) @map("is_mfa_enabled")
+  mfaSecret      String?   @map("mfa_secret") @db.VarChar(255)
+
+  // SECURITY HARDENING: Token versioning for mass revocation
+  tokenVersion   Int       @default(0) @map("token_version")
+
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  lastLoginAt    DateTime? @map("last_login_at") @db.Timestamptz
+  deletedAt      DateTime? @map("deleted_at") @db.Timestamptz
+
+  // Relations
+  sessions       UserSession[]
+  kycDocuments   KycDocument[]
+  reviewedDocs   KycDocument[] @relation("KycReviewer")
+  wallets        Wallet[]
+  auditLogs      AuditLog[]
+
+  @@index([email])
+  @@index([status])
+  @@index([role])
+  @@map("users")
+}
+
+// SECURITY HARDENING: Enhanced role system per audit recommendation
+// Fixes Issue #4 - RBAC Specificity
+enum UserRole {
+  CLIENT        // Standard user (importer/exporter)
+  ORACLE        // Logistics Agent / Digital Notary
+  AUDITOR       // Read-only oversight (can view audit logs)
+  ADMIN         // Platform administrator
+  SUPER_ADMIN   // Emergency system control (Council member)
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum KycStatus {
+  NONE
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model UserSession {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  tokenHash  String   @map("token_hash") @db.VarChar(255)
+  ipAddress  String?  @map("ip_address") @db.Inet
+  userAgent  String?  @map("user_agent") @db.Text
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([tokenHash])
+  @@map("user_sessions")
+}
+
+// SECURITY HARDENING: AES-256-GCM Encrypted Storage
+// Fixes Issue #6 - KYC Document Storage vulnerability
+// Documents are encrypted at rest, never stored as plain files
+model KycDocument {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+  documentType      DocumentType @map("document_type")
+
+  // SECURITY FIX: Encrypted blob storage (replaces documentUrl)
+  encryptedContent  Bytes     @map("encrypted_content")    // AES-256-GCM encrypted
+  encryptionIv      Bytes     @map("encryption_iv")        // Initialization Vector (12 bytes)
+  authTag           Bytes     @map("auth_tag")             // GCM authentication tag (16 bytes)
+
+  // Metadata (not sensitive)
+  fileSize          Int?      @map("file_size")
+  mimeType          String?   @map("mime_type") @db.VarChar(100)
+  originalFilename  String?   @map("original_filename") @db.VarChar(255) // Encrypted separately
+
+  status            DocumentStatus @default(PENDING)
+  reviewedBy        String?   @map("reviewed_by") @db.Uuid
+  reviewedAt        DateTime? @map("reviewed_at") @db.Timestamptz
+  rejectionReason   String?   @map("rejection_reason") @db.Text
+  notarizedAt       DateTime? @map("notarized_at") @db.Timestamptz
+  expiresAt         DateTime? @map("expires_at") @db.Timestamptz
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewer          User?     @relation("KycReviewer", fields: [reviewedBy], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@map("kyc_documents")
+}
+
+enum DocumentType {
+  PASSPORT
+  DRIVERS_LICENSE
+  ID_CARD
+  UTILITY_BILL
+  BANK_STATEMENT
+}
+
+enum DocumentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ============================================
+// PHASE 1: WALLETS
+// ============================================
+
+model Wallet {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  address        String   @unique @db.VarChar(255)
+  balance        Decimal  @default(0) @db.Decimal(20, 8)
+  lockedBalance  Decimal  @default(0) @map("locked_balance") @db.Decimal(20, 8)
+  status         WalletStatus @default(ACTIVE)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balanceHistory WalletBalanceHistory[]
+  sentTransactions     Transaction[] @relation("FromWallet")
+  receivedTransactions Transaction[] @relation("ToWallet")
+
+  @@index([userId])
+  @@index([address])
+  @@index([status])
+  @@map("wallets")
+}
+
+enum WalletStatus {
+  ACTIVE
+  FROZEN
+  CLOSED
+}
+
+model WalletBalanceHistory {
+  id             String   @id @default(uuid()) @db.Uuid
+  walletId       String   @map("wallet_id") @db.Uuid
+  previousBalance Decimal @map("previous_balance") @db.Decimal(20, 8)
+  newBalance     Decimal  @map("new_balance") @db.Decimal(20, 8)
+  changeAmount   Decimal  @map("change_amount") @db.Decimal(20, 8)
+  changeType     BalanceChangeType @map("change_type")
+  referenceType  String?  @map("reference_type") @db.VarChar(50)
+  referenceId    String?  @map("reference_id") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  wallet         Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([createdAt])
+  @@map("wallet_balance_history")
+}
+
+enum BalanceChangeType {
+  CREDIT
+  DEBIT
+  LOCK
+  UNLOCK
+}
+
+// ============================================
+// PHASE 1: BLOCKCHAIN & TRANSACTIONS
+// ============================================
+
+model Block {
+  id               String   @id @default(uuid()) @db.Uuid
+  blockNumber      BigInt   @unique @map("block_number")
+  blockHash        String   @unique @map("block_hash") @db.VarChar(255)
+  previousHash     String   @map("previous_hash") @db.VarChar(255)
+  merkleRoot       String?  @map("merkle_root") @db.VarChar(255)
+  timestamp        DateTime @db.Timestamptz
+  transactionCount Int      @default(0) @map("transaction_count")
+  sizeBytes        Int?     @map("size_bytes")
+  validatorAddress String?  @map("validator_address") @db.VarChar(255)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  transactions     Transaction[]
+
+  @@index([blockNumber])
+  @@index([blockHash])
+  @@index([timestamp])
+  @@map("blocks")
+}
+
+model Transaction {
+  id             String   @id @default(uuid()) @db.Uuid
+  txHash         String   @unique @map("tx_hash") @db.VarChar(255)
+  blockId        String?  @map("block_id") @db.Uuid
+  blockNumber    BigInt?  @map("block_number")
+  fromAddress    String   @map("from_address") @db.VarChar(255)
+  toAddress      String   @map("to_address") @db.VarChar(255)
+  amount         Decimal  @db.Decimal(20, 8)
+  fee            Decimal  @default(0) @db.Decimal(20, 8)
+  txType         TransactionType @map("tx_type")
+  status         TransactionStatus @default(PENDING)
+  confirmations  Int      @default(0)
+  metadata       Json?    @db.JsonB
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  confirmedAt    DateTime? @map("confirmed_at") @db.Timestamptz
+
+  // Relations
+  block          Block?   @relation(fields: [blockId], references: [id])
+  receipt        TransactionReceipt?
+  fromWallet     Wallet?  @relation("FromWallet", fields: [fromAddress], references: [address])
+  toWallet       Wallet?  @relation("ToWallet", fields: [toAddress], references: [address])
+
+  @@index([txHash])
+  @@index([blockId])
+  @@index([fromAddress])
+  @@index([toAddress])
+  @@index([status])
+  @@index([createdAt])
+  @@index([txType])
+  @@map("transactions")
+}
+
+enum TransactionType {
+  TRANSFER
+  MINT
+  BURN
+  ESCROW
+  RELEASE
+  STAKE
+  UNSTAKE
+  CLAIM_YIELD
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+model TransactionReceipt {
+  id             String   @id @default(uuid()) @db.Uuid
+  transactionId  String   @unique @map("transaction_id") @db.Uuid
+  receiptHash    String   @unique @map("receipt_hash") @db.VarChar(255)
+  gasUsed        BigInt?  @map("gas_used")
+  status         Boolean
+  logs           Json?    @db.JsonB
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  transaction    Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@map("transaction_receipts")
+}
+
+// ============================================
+// PHASE 1: ADMIN & AUDIT (Security Hardened)
+// ============================================
+
+// SECURITY HARDENING: Hash-Chained Audit Logs
+// Fixes Issue #7 - Audit Log Mutability
+// Each log entry contains hash of previous entry (mini-blockchain)
+// PostgreSQL triggers prevent deletion/modification of hash fields
+model AuditLog {
+  id            String   @id @default(uuid()) @db.Uuid
+  adminId       String?  @map("admin_id") @db.Uuid
+  action        String   @db.VarChar(100)
+  entityType    String   @map("entity_type") @db.VarChar(50)
+  entityId      String   @map("entity_id") @db.Uuid
+
+  // SECURITY FIX: Hash chain for integrity verification
+  previousHash  String?  @map("previous_hash") @db.VarChar(64)  // SHA-256 of previous log
+  currentHash   String   @map("current_hash") @db.VarChar(64)   // SHA-256 of this entry
+
+  oldValues     Json?    @map("old_values") @db.JsonB
+  newValues     Json?    @map("new_values") @db.JsonB
+  ipAddress     String?  @map("ip_address") @db.Inet
+  userAgent     String?  @map("user_agent") @db.Text
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  admin         User?    @relation(fields: [adminId], references: [id])
+
+  @@index([adminId])
+  @@index([action])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model SystemSetting {
+  key         String   @id @db.VarChar(100)
+  value       Json     @db.JsonB
+  description String?  @db.Text
+  updatedBy   String?  @map("updated_by") @db.Uuid
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("system_settings")
+}
+
+model FeeConfig {
+  id          String   @id @default(uuid()) @db.Uuid
+  feeType     String   @unique @map("fee_type") @db.VarChar(50)
+  percentage  Decimal? @db.Decimal(5, 4)
+  flatFee     Decimal  @default(0) @map("flat_fee") @db.Decimal(20, 8)
+  minAmount   Decimal  @default(0) @map("min_amount") @db.Decimal(20, 8)
+  maxAmount   Decimal? @map("max_amount") @db.Decimal(20, 8)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("fee_config")
+}
+
+// ============================================
+// SECURITY HARDENING: Granular RBAC System
+// Fixes Issue #4 - RBAC Specificity
+// ============================================
+
+// Granular permissions table
+model Permission {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique @db.VarChar(100) // e.g., "kyc:read", "audit:read", "user:write"
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+// Role-Permission mapping
+model RolePermission {
+  id           String     @id @default(uuid()) @db.Uuid
+  role         UserRole
+  permissionId String     @map("permission_id") @db.Uuid
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([role, permissionId])
+  @@index([role])
+  @@map("role_permissions")
+}
+
+// ============================================
+// SECURITY HARDENING: JWT Token Blacklist
+// Fixes Issue #3 - JWT Revocation Complexity
+// Stored in Redis, but DB backup for persistence
+// ============================================
+
+model RevokedToken {
+  id          String   @id @default(uuid()) @db.Uuid
+  tokenId     String   @unique @map("token_id") @db.VarChar(255)  // JWT jti claim
+  userId      String   @map("user_id") @db.Uuid
+  reason      String?  @db.VarChar(100)  // logout, password_change, compromised, admin_revoke
+  expiresAt   DateTime @map("expires_at") @db.Timestamptz  // Auto-cleanup after token would expire anyway
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([tokenId])
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("revoked_tokens")
+}

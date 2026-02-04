@@ -15,7 +15,7 @@ interface ButtonBaseProps {
   loading?: boolean
 }
 
-interface ButtonAsButtonProps extends ButtonBaseProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
+interface ButtonAsButtonProps extends ButtonBaseProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'children'> {
   href?: never
 }
 

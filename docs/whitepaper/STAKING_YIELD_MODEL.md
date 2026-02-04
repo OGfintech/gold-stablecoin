@@ -1,4 +1,4 @@
-# STTAURX Staking Yield Model
+# AUSRX Staking Yield Model
 
 **Document Type:** Core Business Model
 **Status:** Definitive
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-The STTAURX 5% APY staking yield is generated through **Smart Letter of Credit (Smart LC) facilitation** for large commodity trades between corporations and countries. This is a sustainable, real-world yield source based on trade finance fees—not token inflation or unsustainable subsidies.
+The AUSRX 5% APY staking yield is generated through **Smart Letter of Credit (Smart LC) facilitation** for large commodity trades between corporations and countries. This is a sustainable, real-world yield source based on trade finance fees—not token inflation or unsustainable subsidies.
 
 ---
 
@@ -55,17 +55,17 @@ WITH Letter of Credit:
 
 ---
 
-## STTAURX Smart Letter of Credit Model
+## AUSRX Smart Letter of Credit Model
 
 ### How It Works
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    STTAURX SMART LC TRADE FLOW                               │
+│                    AUSRX SMART LC TRADE FLOW                               │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-   BUYER              STTAURX             STAKING POOL           SELLER
-     │                PLATFORM            (STTAURX Tokens)          │
+   BUYER              AUSRX             STAKING POOL           SELLER
+     │                PLATFORM            (AUSRX Tokens)          │
      │                    │                     │                   │
      │  1. Request LC     │                     │                   │
      │ ──────────────────►│                     │                   │
@@ -121,7 +121,7 @@ It's common for large commodity trades to require **two or more Letters of Credi
 
 ```
 Assumptions:
-- Total staked STTAURX: $100 million
+- Total staked AUSRX: $100 million
 - Annual trade volume through Smart LCs: $2 billion
 - Average LC fee: 1.5%
 - Platform's share of fees: 50% (rest to liquidity providers)
@@ -157,7 +157,7 @@ struct SmartLC {
     address buyer;
     address seller;
     uint256 tradeAmount;
-    uint256 collateralLocked;      // STTAURX tokens from staking pool
+    uint256 collateralLocked;      // AUSRX tokens from staking pool
     uint256 lcFeePercent;          // e.g., 150 = 1.5%
 
     LCType lcType;                 // Payment, Performance, etc.
@@ -214,7 +214,7 @@ On LC Completion:
 
 ### Why This Model Wins
 
-| Traditional LC | STTAURX Smart LC |
+| Traditional LC | AUSRX Smart LC |
 |----------------|------------------|
 | 3-5 days to issue | Minutes (smart contract) |
 | Paper-based documents | Digital, on-chain verification |
@@ -227,7 +227,7 @@ On LC Completion:
 
 ```
 Traditional LC Market: ~$3 trillion/year
-If STTAURX captures 0.1%: $3 billion in trades
+If AUSRX captures 0.1%: $3 billion in trades
 At 1.5% average fee: $45 million in fees
 Distributed to stakers: Sustainable 5%+ APY
 ```
@@ -236,7 +236,7 @@ Distributed to stakers: Sustainable 5%+ APY
 
 ## Whitepaper Statement
 
-> *"STTAURX staking rewards are generated through Smart Letter of Credit facilitation for international commodity trades. When corporations or countries execute large trades through our platform, staked tokens serve as collateral backing these Letters of Credit. The LC fees—typically 1-2% of trade value—are distributed to stakers proportionally. This creates a sustainable yield tied to real economic activity, not token inflation."*
+> *"AUSRX staking rewards are generated through Smart Letter of Credit facilitation for international commodity trades. When corporations or countries execute large trades through our platform, staked tokens serve as collateral backing these Letters of Credit. The LC fees—typically 1-2% of trade value—are distributed to stakers proportionally. This creates a sustainable yield tied to real economic activity, not token inflation."*
 
 ---
 

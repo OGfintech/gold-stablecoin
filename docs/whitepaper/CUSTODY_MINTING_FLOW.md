@@ -1,4 +1,4 @@
-# STTAURX Custody & Minting Flow
+# AUSRX Custody & Minting Flow
 
 **Document Type:** Core Business Process
 **Status:** Definitive
@@ -8,18 +8,18 @@
 
 ## Executive Summary
 
-STTAURX uses a **certificate-triggered minting model** with HSBC as the institutional custodian. This creates a direct, auditable link between physical gold acquisition and token minting - a key differentiator from competitors who mint tokens from pooled reserves.
+AUSRX uses a **certificate-triggered minting model** with HSBC as the institutional custodian. This creates a direct, auditable link between physical gold acquisition and token minting - a key differentiator from competitors who mint tokens from pooled reserves.
 
 ---
 
-## The STTAURX Minting Flow
+## The AUSRX Minting Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        STTAURX MINTING PROCESS                               │
+│                        AUSRX MINTING PROCESS                               │
 └─────────────────────────────────────────────────────────────────────────────┘
 
-   USER                    STTAURX                 HSBC                 GOLD BROKER
+   USER                    AUSRX                 HSBC                 GOLD BROKER
     │                         │                      │                      │
     │  1. Deposit USD         │                      │                      │
     │ ───────────────────────>│                      │                      │
@@ -44,7 +44,7 @@ STTAURX uses a **certificate-triggered minting model** with HSBC as the institut
     │                         │     Mint Tokens      │                      │
     │                         │     @ Spot Price     │                      │
     │                         │                      │                      │
-    │  7. Receive STTAURX     │                      │                      │
+    │  7. Receive AUSRX     │                      │                      │
     │     Tokens              │                      │                      │
     │ <───────────────────────│                      │                      │
     │                         │                      │                      │
@@ -56,13 +56,13 @@ STTAURX uses a **certificate-triggered minting model** with HSBC as the institut
 ## Step-by-Step Process
 
 ### Step 1: User Deposit
-- User initiates deposit via STTAURX platform
-- Funds transferred to **STTAURX Trust Account at HSBC**
+- User initiates deposit via AUSRX platform
+- Funds transferred to **AUSRX Trust Account at HSBC**
 - KYC/AML verification completed
 - Deposit amount recorded on blockchain
 
 ### Step 2: Trust Account Funding
-- STTAURX Trust Account receives USD
+- AUSRX Trust Account receives USD
 - Funds held in segregated account
 - HSBC confirms receipt
 
@@ -100,7 +100,7 @@ STTAURX uses a **certificate-triggered minting model** with HSBC as the institut
 - 1:1 backing established and verifiable
 
 ### Step 7: Token Delivery
-- STTAURX tokens credited to user wallet
+- AUSRX tokens credited to user wallet
 - Transaction recorded on blockchain
 - User can verify certificate backing
 
@@ -108,9 +108,9 @@ STTAURX uses a **certificate-triggered minting model** with HSBC as the institut
 
 ## Key Differentiators
 
-### STTAURX vs. Competitors
+### AUSRX vs. Competitors
 
-| Aspect | PAXG (Paxos) | XAUT (Tether) | STTAURX |
+| Aspect | PAXG (Paxos) | XAUT (Tether) | AUSRX |
 |--------|--------------|---------------|---------|
 | **Custodian** | Paxos Trust + Brink's | Tether + Swiss vaults | **HSBC (Tier-1 Bank)** |
 | **Gold Source** | Market purchases | Market purchases | **Top-6 Global Broker** |
@@ -144,7 +144,7 @@ STTAURX uses a **certificate-triggered minting model** with HSBC as the institut
 ```json
 {
   "certificate": {
-    "certificate_id": "STTAURX-2026-000001",
+    "certificate_id": "AUSRX-2026-000001",
     "hsbc_reference": "HSBC-GC-HK-2026-12345",
     "timestamp": "2026-02-03T10:30:00Z",
 
@@ -227,9 +227,9 @@ Quarterly attestation says "we have enough gold"
 - Pooled reserve = shared ownership ambiguity
 - Token price ≠ spot price (exchange determined)
 
-### How STTAURX Works (Certificate-Triggered Model)
+### How AUSRX Works (Certificate-Triggered Model)
 ```
-User deposits USD to STTAURX
+User deposits USD to AUSRX
         ↓
 HSBC receives funds in Trust Account
         ↓
@@ -275,16 +275,16 @@ User receives tokens backed by THEIR certificate
 
 ## Trust Account Structure
 
-### STTAURX Trust Account at HSBC
+### AUSRX Trust Account at HSBC
 - **Type:** Segregated Trust Account
 - **Purpose:** Gold acquisition on behalf of users
-- **Protection:** Assets segregated from STTAURX operating funds
+- **Protection:** Assets segregated from AUSRX operating funds
 - **Oversight:** Subject to banking regulations
-- **Jurisdiction:** [To be determined - HK, Singapore, or London]
+- **Jurisdiction:** Hong Kong (primary), Singapore (secondary)
 
 ### Fund Flow
 ```
-User USD → STTAURX Platform → HSBC Trust Account → Gold Purchase → HSBC Vault
+User USD → AUSRX Platform → HSBC Trust Account → Gold Purchase → HSBC Vault
 ```
 
 ### Key Protections
@@ -298,7 +298,7 @@ User USD → STTAURX Platform → HSBC Trust Account → Gold Purchase → HSBC 
 ## Summary: Why This Matters for the White Paper
 
 ### Core Message
-> *"STTAURX doesn't ask you to trust that gold exists. When you deposit, HSBC purchases gold at that moment's spot price, receives it in their vault, and issues a certificate. Only then are your tokens minted. Every token has a certificate. Every certificate has gold. Every piece of gold has serial numbers you can verify."*
+> *"AUSRX doesn't ask you to trust that gold exists. When you deposit, HSBC purchases gold at that moment's spot price, receives it in their vault, and issues a certificate. Only then are your tokens minted. Every token has a certificate. Every certificate has gold. Every piece of gold has serial numbers you can verify."*
 
 ### Key Phrases for Marketing
 - "Certificate-Triggered Minting"
