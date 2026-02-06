@@ -22,7 +22,7 @@ export function StakingDashboard({ walletAddress, walletBalance }: StakingDashbo
     queryKey: ['staking', walletAddress],
     queryFn: () => stakingApi.getStakingInfo(walletAddress),
     enabled: !!walletAddress,
-    refetchInterval: 10000,
+    refetchInterval: 60000,
   })
 
   const handleClaimYield = async () => {

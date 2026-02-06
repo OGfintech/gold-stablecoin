@@ -32,14 +32,14 @@ export default function WalletHome() {
     queryKey: ['balance', wallet.address],
     queryFn: () => walletApi.getBalance(wallet.address!),
     enabled: !!wallet.address,
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   })
 
   const { data: txData, isLoading: txLoading } = useQuery({
     queryKey: ['transactions', wallet.address],
     queryFn: () => walletApi.getTransactions(wallet.address!),
     enabled: !!wallet.address,
-    refetchInterval: 10000,
+    refetchInterval: 60000,
   })
 
   // No wallet - show setup
