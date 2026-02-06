@@ -27,7 +27,7 @@ export function GoldPriceWidget({
         </div>
         <div className="text-right">
           <p className="text-gray-400 text-xs">Per Troy Ounce</p>
-          <p className="text-yellow-400 font-semibold">${pricePerOz.toFixed(2)}</p>
+          <p className="text-gold-200 font-semibold">${pricePerOz.toFixed(2)}</p>
         </div>
       </div>
     </Card>
