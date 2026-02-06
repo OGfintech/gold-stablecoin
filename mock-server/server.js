@@ -594,29 +594,68 @@ app.post('/api/v1/admin/keypair', adminLimiter, requireAuth, requireRole(['ADMIN
 });
 
 // ============================================
-// STAKING SYSTEM (requires auth)
+// STAKING SYSTEM (DB-backed tiers, requires auth)
 // ============================================
 
 const stakingPositions = new Map();
-let globalYieldRate = 0.05;
 let totalStaked = BigInt(0);
 let stakingPoolFees = BigInt(0);
 
 const MAX_STAKES_PER_USER = 20;
 
-const LOCK_PERIOD_BONUSES = {
-  0: 1.0,
-  30: 1.5,
-  60: 2.0,
-  90: 2.5,
-};
+// Cache of staking tier configs loaded from DB
+let stakingTierCache = null;
+let stakingTierCacheTime = 0;
+const TIER_CACHE_TTL = 60000; // 1 minute
+
+async function getStakingTiers() {
+  const now = Date.now();
+  if (stakingTierCache && (now - stakingTierCacheTime) < TIER_CACHE_TTL) {
+    return stakingTierCache;
+  }
+  try {
+    const { prisma } = require('./database/db');
+    const tiers = await prisma.stakingTierConfig.findMany({
+      where: { isActive: true },
+      orderBy: { lockDays: 'asc' },
+    });
+    stakingTierCache = tiers;
+    stakingTierCacheTime = now;
+    return tiers;
+  } catch (e) {
+    // Fallback defaults if DB unavailable
+    return [
+      { tierName: 'passive', displayName: 'Passive', lockDays: 0, apyRate: 0.005, minStake: 0, maxStake: null },
+      { tierName: 'gold_lock', displayName: 'Gold Lock', lockDays: 90, apyRate: 0.05, minStake: 0, maxStake: null },
+      { tierName: 'platinum_lock', displayName: 'Platinum Lock', lockDays: 180, apyRate: 0.15, minStake: 0, maxStake: null },
+    ];
+  }
+}
+
+function getTierByLockDays(tiers, lockDays) {
+  return tiers.find(t => t.lockDays === lockDays) || null;
+}
+
+function getPassiveRate(tiers) {
+  const passive = tiers.find(t => t.lockDays === 0);
+  return passive ? Number(passive.apyRate) : 0.005;
+}
+
+function getTiersMap(tiers) {
+  const map = {};
+  for (const t of tiers) {
+    map[t.lockDays] = { name: t.displayName, apy: Number(t.apyRate) };
+  }
+  return map;
+}
 
 const calculateStakeYield = (stake) => {
   const now = Date.now();
   const elapsed = (now - stake.lastUpdateTime) / 1000;
   const annualSeconds = 365 * 24 * 60 * 60;
   const stakedBigInt = BigInt(stake.amount);
-  return (stakedBigInt * BigInt(Math.floor(stake.yieldRate * 10000)) * BigInt(Math.floor(elapsed))) / BigInt(annualSeconds * 10000);
+  const rate = stake.yieldRate || 0.005; // contracted rate, fallback to passive
+  return (stakedBigInt * BigInt(Math.floor(rate * 10000)) * BigInt(Math.floor(elapsed))) / BigInt(annualSeconds * 10000);
 };
 
 const calculateAccruedYield = (position) => {
@@ -625,7 +664,8 @@ const calculateAccruedYield = (position) => {
     const elapsed = (now - position.lastUpdateTime) / 1000;
     const annualSeconds = 365 * 24 * 60 * 60;
     const stakedBigInt = BigInt(position.stakedAmount || '0');
-    return (stakedBigInt * BigInt(Math.floor((position.yieldRate || globalYieldRate) * 10000)) * BigInt(Math.floor(elapsed))) / BigInt(annualSeconds * 10000);
+    const rate = position.yieldRate || 0.005;
+    return (stakedBigInt * BigInt(Math.floor(rate * 10000)) * BigInt(Math.floor(elapsed))) / BigInt(annualSeconds * 10000);
   }
   let totalYield = BigInt(0);
   for (const stake of position.stakes) {
@@ -652,14 +692,16 @@ const getUnlockableAmount = (position) => {
 
 const getStakesSummary = (position) => {
   if (!position.stakes || position.stakes.length === 0) {
+    const rate = position.yieldRate || 0.005;
     return [{
       amount: position.stakedAmount || '0',
       amountFormatted: (Number(position.stakedAmount || 0) / 1e18).toFixed(6),
       lockPeriod: 0,
       lockExpiry: null,
       isLocked: false,
-      yieldRate: position.yieldRate || globalYieldRate,
-      yieldRateFormatted: ((position.yieldRate || globalYieldRate) * 100).toFixed(2) + '%',
+      yieldRate: rate,
+      yieldRateFormatted: (rate * 100).toFixed(2) + '%',
+      tierName: position.tierName || 'passive',
       stakedAt: position.lastUpdateTime || Date.now()
     }];
   }
@@ -672,14 +714,19 @@ const getStakesSummary = (position) => {
     daysRemaining: stake.lockExpiry ? Math.max(0, Math.ceil((stake.lockExpiry - Date.now()) / (24 * 60 * 60 * 1000))) : 0,
     yieldRate: stake.yieldRate,
     yieldRateFormatted: (stake.yieldRate * 100).toFixed(2) + '%',
+    tierName: stake.tierName || 'passive',
+    autoCompound: stake.autoCompound || false,
     stakedAt: stake.stakedAt
   }));
 };
 
 // Get staking info (requires auth)
-app.get('/api/v1/staking/:address', requireAuth, (req, res) => {
+app.get('/api/v1/staking/:address', requireAuth, async (req, res) => {
   const address = req.params.address;
   let position = stakingPositions.get(address);
+  const tiers = await getStakingTiers();
+  const passiveRate = getPassiveRate(tiers);
+  const tiersMap = getTiersMap(tiers);
 
   if (!position) {
     return res.json({
@@ -692,8 +739,8 @@ app.get('/api/v1/staking/:address', requireAuth, (req, res) => {
         unlockableAmountFormatted: '0.00',
         lockedAmount: '0',
         lockedAmountFormatted: '0.00',
-        baseYieldRate: globalYieldRate,
-        baseYieldRateFormatted: (globalYieldRate * 100).toFixed(2) + '%',
+        passiveYieldRate: passiveRate,
+        passiveYieldRateFormatted: (passiveRate * 100).toFixed(2) + '%',
         accumulatedYield: '0',
         accumulatedYieldFormatted: '0.00',
         lastUpdateTime: Date.now(),
@@ -701,7 +748,7 @@ app.get('/api/v1/staking/:address', requireAuth, (req, res) => {
         stakingHistory: [],
         totalStaked: totalStaked.toString(),
         totalStakedFormatted: (Number(totalStaked) / 1e18).toFixed(2),
-        lockPeriodBonuses: LOCK_PERIOD_BONUSES
+        tiers: tiersMap
       }
     });
   }
@@ -721,8 +768,8 @@ app.get('/api/v1/staking/:address', requireAuth, (req, res) => {
       unlockableAmountFormatted: (Number(unlockable) / 1e18).toFixed(6),
       lockedAmount: lockedAmount.toString(),
       lockedAmountFormatted: (Number(lockedAmount) / 1e18).toFixed(6),
-      baseYieldRate: globalYieldRate,
-      baseYieldRateFormatted: (globalYieldRate * 100).toFixed(2) + '%',
+      passiveYieldRate: passiveRate,
+      passiveYieldRateFormatted: (passiveRate * 100).toFixed(2) + '%',
       accumulatedYield: totalYield.toString(),
       accumulatedYieldFormatted: (Number(totalYield) / 1e18).toFixed(6),
       lastUpdateTime: Date.now(),
@@ -730,22 +777,33 @@ app.get('/api/v1/staking/:address', requireAuth, (req, res) => {
       stakingHistory: position.stakingHistory || [],
       totalStaked: totalStaked.toString(),
       totalStakedFormatted: (Number(totalStaked) / 1e18).toFixed(2),
-      lockPeriodBonuses: LOCK_PERIOD_BONUSES
+      tiers: tiersMap
     }
   });
 });
 
 // Stake tokens (requires auth + validated + rate limited)
-app.post('/api/v1/staking/stake', sensitiveLimiter, requireAuth, validateStake, (req, res) => {
-  const { address, amount, lockPeriod = 0 } = req.body;
+app.post('/api/v1/staking/stake', sensitiveLimiter, requireAuth, validateStake, async (req, res) => {
+  const { address, amount, lockPeriod = 0, autoCompound = false } = req.body;
 
   const amountBigInt = BigInt(amount);
   let position = stakingPositions.get(address);
+  const tiers = await getStakingTiers();
+  const tier = getTierByLockDays(tiers, lockPeriod);
 
-  const bonus = LOCK_PERIOD_BONUSES[lockPeriod] || 1.0;
-  const effectiveYieldRate = globalYieldRate * bonus;
+  if (!tier) {
+    return res.status(400).json({ success: false, error: `Invalid lock period. Available: ${tiers.map(t => t.lockDays).join(', ')} days` });
+  }
+
+  const effectiveYieldRate = Number(tier.apyRate);
+  const tierName = tier.tierName;
   const now = Date.now();
   const lockExpiry = lockPeriod > 0 ? now + (lockPeriod * 24 * 60 * 60 * 1000) : null;
+
+  // Check min stake
+  if (tier.minStake && Number(amountBigInt) / 1e18 < Number(tier.minStake)) {
+    return res.status(400).json({ success: false, error: `Minimum stake for ${tier.displayName}: ${tier.minStake} STTAURX` });
+  }
 
   if (!position) {
     position = { stakes: [], totalStaked: '0', stakingHistory: [] };
@@ -756,7 +814,8 @@ app.post('/api/v1/staking/stake', sensitiveLimiter, requireAuth, validateStake, 
     if (position.stakedAmount && BigInt(position.stakedAmount) > 0) {
       position.stakes.push({
         amount: position.stakedAmount,
-        yieldRate: position.yieldRate || globalYieldRate,
+        yieldRate: position.yieldRate || 0.005,
+        tierName: 'passive',
         lockPeriod: 0, lockExpiry: null,
         stakedAt: position.lastUpdateTime || now,
         accumulatedYield: position.accumulatedYield || '0',
@@ -772,8 +831,10 @@ app.post('/api/v1/staking/stake', sensitiveLimiter, requireAuth, validateStake, 
 
   position.stakes.push({
     amount: amount,
-    yieldRate: effectiveYieldRate,
+    yieldRate: effectiveYieldRate,  // Contracted rate at time of staking
+    tierName,
     lockPeriod, lockExpiry,
+    autoCompound,
     stakedAt: now,
     accumulatedYield: '0',
     lastUpdateTime: now
@@ -783,8 +844,8 @@ app.post('/api/v1/staking/stake', sensitiveLimiter, requireAuth, validateStake, 
   position.totalStaked = newTotalStaked.toString();
 
   position.stakingHistory.push({
-    type: 'stake', amount, lockPeriod, lockExpiry,
-    yieldRate: effectiveYieldRate,
+    type: 'stake', amount, lockPeriod, lockExpiry, tierName,
+    yieldRate: effectiveYieldRate, autoCompound,
     timestamp: new Date().toISOString(),
     txHash: randomHex(64)
   });
@@ -799,12 +860,13 @@ app.post('/api/v1/staking/stake', sensitiveLimiter, requireAuth, validateStake, 
       status: 'confirmed',
       stakedAmount: amount,
       stakedAmountFormatted: (Number(amount) / 1e18).toFixed(6),
-      lockPeriod, lockExpiry,
+      lockPeriod, lockExpiry, tierName,
       effectiveYieldRate,
       effectiveYieldRateFormatted: (effectiveYieldRate * 100).toFixed(2) + '%',
+      autoCompound,
       message: lockPeriod > 0
-        ? `Tokens staked with ${lockPeriod}-day lock at ${(effectiveYieldRate * 100).toFixed(2)}% APY`
-        : 'Tokens staked successfully (flexible)'
+        ? `Tokens staked in ${tier.displayName} (${lockPeriod}d) at ${(effectiveYieldRate * 100).toFixed(2)}% APY`
+        : `Tokens earning passive yield at ${(effectiveYieldRate * 100).toFixed(2)}% APY`
     }
   });
 });
@@ -928,41 +990,85 @@ app.post('/api/v1/staking/claim', requireAuth, (req, res) => {
   });
 });
 
-// Admin: Set global yield rate (ADMIN only + validated)
-app.post('/api/v1/admin/staking/set-rate', adminLimiter, requireAuth, requireRole(['ADMIN', 'SUPER_ADMIN']), requirePermission('fee:manage'), validateYieldRate, async (req, res) => {
-  const { rate } = req.body;
-  const oldRate = globalYieldRate;
-  globalYieldRate = rate;
-
-  stakingPositions.forEach((position, address) => {
-    const newYield = calculateAccruedYield(position);
-    position.accumulatedYield = (BigInt(position.accumulatedYield || '0') + newYield).toString();
-    position.yieldRate = rate;
-    position.lastUpdateTime = Date.now();
-    stakingPositions.set(address, position);
-  });
-
-  try {
-    await auditFromRequest(req, AuditAction.ADMIN_FEE_UPDATE, 'staking', 'global_yield_rate', { rate: oldRate }, { rate });
-  } catch (e) { /* audit best-effort */ }
-
+// Admin: Get all staking tier configs
+app.get('/api/v1/admin/staking/tiers', requireAuth, requireRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+  const tiers = await getStakingTiers();
   res.json({
     success: true,
-    data: {
-      newRate: rate,
-      newRateFormatted: (rate * 100).toFixed(2) + '%',
-      message: 'Global yield rate updated'
-    }
+    data: { tiers: tiers.map(t => ({
+      id: t.id, tierName: t.tierName, displayName: t.displayName,
+      lockDays: t.lockDays, apyRate: Number(t.apyRate),
+      apyFormatted: (Number(t.apyRate) * 100).toFixed(2) + '%',
+      minStake: Number(t.minStake || 0), maxStake: t.maxStake ? Number(t.maxStake) : null,
+      isActive: t.isActive
+    }))}
   });
 });
 
+// Admin: Update a staking tier config (ADMIN only + fee:manage)
+app.put('/api/v1/admin/staking/tiers/:tierName', adminLimiter, requireAuth, requireRole(['ADMIN', 'SUPER_ADMIN']), requirePermission('fee:manage'), async (req, res) => {
+  const { tierName } = req.params;
+  const { apyRate, minStake, maxStake, isActive } = req.body;
+
+  try {
+    const { prisma } = require('./database/db');
+    const existing = await prisma.stakingTierConfig.findUnique({ where: { tierName } });
+    if (!existing) {
+      return res.status(404).json({ success: false, error: `Tier "${tierName}" not found` });
+    }
+
+    // Validate rate if provided
+    if (apyRate !== undefined) {
+      if (typeof apyRate !== 'number' || apyRate < 0 || apyRate > 1) {
+        return res.status(400).json({ success: false, error: 'apyRate must be between 0 and 1 (0%-100%)' });
+      }
+    }
+
+    const updateData = {};
+    if (apyRate !== undefined) updateData.apyRate = apyRate;
+    if (minStake !== undefined) updateData.minStake = minStake;
+    if (maxStake !== undefined) updateData.maxStake = maxStake;
+    if (isActive !== undefined) updateData.isActive = isActive;
+    updateData.updatedBy = req.user.userId;
+
+    const oldValues = { apyRate: Number(existing.apyRate), minStake: Number(existing.minStake), isActive: existing.isActive };
+    const updated = await prisma.stakingTierConfig.update({ where: { tierName }, data: updateData });
+
+    // Invalidate cache
+    stakingTierCache = null;
+
+    try {
+      await auditFromRequest(req, AuditAction.ADMIN_FEE_UPDATE, 'staking_tier', existing.id, oldValues, updateData);
+    } catch (e) { /* audit best-effort */ }
+
+    res.json({
+      success: true,
+      data: {
+        tier: {
+          id: updated.id, tierName: updated.tierName, displayName: updated.displayName,
+          lockDays: updated.lockDays, apyRate: Number(updated.apyRate),
+          apyFormatted: (Number(updated.apyRate) * 100).toFixed(2) + '%',
+          minStake: Number(updated.minStake), maxStake: updated.maxStake ? Number(updated.maxStake) : null,
+          isActive: updated.isActive
+        },
+        message: `Tier "${updated.displayName}" updated. Changes apply to NEW stakes only.`
+      }
+    });
+  } catch (e) {
+    console.error('Tier update error:', e);
+    res.status(500).json({ success: false, error: 'Failed to update tier config' });
+  }
+});
+
 // Admin: Get staking stats (ADMIN only)
-app.get('/api/v1/admin/staking/stats', requireAuth, requireRole(['ADMIN', 'SUPER_ADMIN']), (req, res) => {
+app.get('/api/v1/admin/staking/stats', requireAuth, requireRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
   let totalAccumulatedYield = BigInt(0);
   stakingPositions.forEach((position) => {
     const newYield = calculateAccruedYield(position);
     totalAccumulatedYield += BigInt(position.accumulatedYield || '0') + newYield;
   });
+
+  const tiers = await getStakingTiers();
 
   res.json({
     success: true,
@@ -970,14 +1076,71 @@ app.get('/api/v1/admin/staking/stats', requireAuth, requireRole(['ADMIN', 'SUPER
       totalStaked: totalStaked.toString(),
       totalStakedFormatted: (Number(totalStaked) / 1e18).toFixed(2),
       totalStakers: stakingPositions.size,
-      globalYieldRate,
-      globalYieldRateFormatted: (globalYieldRate * 100).toFixed(2) + '%',
+      tiers: tiers.map(t => ({ tierName: t.tierName, displayName: t.displayName, lockDays: t.lockDays, apyRate: Number(t.apyRate) })),
       totalAccumulatedYield: totalAccumulatedYield.toString(),
       totalAccumulatedYieldFormatted: (Number(totalAccumulatedYield) / 1e18).toFixed(6),
       stakingPoolFees: stakingPoolFees.toString(),
       stakingPoolFeesFormatted: (Number(stakingPoolFees) / 1e18).toFixed(6)
     }
   });
+});
+
+// Admin: Override user KYC status
+app.put('/api/v1/admin/users/:userId/kyc-status', adminLimiter, requireAuth, requireRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+  const { userId } = req.params;
+  const { status } = req.body;
+
+  const validStatuses = ['NONE', 'PENDING', 'VERIFIED', 'PREMIUM', 'INSTITUTIONAL', 'REJECTED'];
+  if (!status || !validStatuses.includes(status)) {
+    return res.status(400).json({ success: false, error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
+  }
+
+  try {
+    const { prisma } = require('./database/db');
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    const oldStatus = user.kycStatus;
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: { kycStatus: status, status: status === 'REJECTED' ? 'SUSPENDED' : 'ACTIVE' },
+      select: { id: true, email: true, fullName: true, role: true, kycStatus: true, status: true }
+    });
+
+    try {
+      await auditFromRequest(req, 'KYC_STATUS_CHANGE', 'user', userId, { kycStatus: oldStatus }, { kycStatus: status });
+    } catch (e) { /* audit best-effort */ }
+
+    res.json({
+      success: true,
+      data: { user: updated, message: `KYC status updated: ${oldStatus} -> ${status}` }
+    });
+  } catch (e) {
+    console.error('KYC update error:', e);
+    res.status(500).json({ success: false, error: 'Failed to update KYC status' });
+  }
+});
+
+// Admin: List all users (for admin panel)
+app.get('/api/v1/admin/users', requireAuth, requireRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+  try {
+    const { prisma } = require('./database/db');
+    const users = await prisma.user.findMany({
+      select: {
+        id: true, email: true, fullName: true, role: true, status: true,
+        kycStatus: true, emailVerified: true, autoCompound: true,
+        createdAt: true, lastLoginAt: true,
+        wallets: { select: { address: true, balance: true, lockedBalance: true, status: true } }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json({ success: true, data: { users, total: users.length } });
+  } catch (e) {
+    console.error('User list error:', e);
+    res.status(500).json({ success: false, error: 'Failed to fetch users' });
+  }
 });
 
 // ============================================

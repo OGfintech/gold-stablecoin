@@ -43,10 +43,30 @@ async function main() {
     update: {},
     create: {
       key: 'staking_rate',
-      value: { baseRate: 0.05, lockBonuses: { 0: 1.0, 30: 1.5, 60: 2.0, 90: 2.5 } },
-      description: 'Staking yield rates and lock period bonuses',
+      value: { tiers: ['passive', 'gold_lock', 'platinum_lock'], source: 'staking_tier_configs' },
+      description: 'Staking yield rates — configured in staking_tier_configs table',
     },
   });
+
+  // ============================================
+  // 1.5 STAKING TIER CONFIGURATION
+  // ============================================
+  console.log('📊 Creating staking tier configs...');
+
+  const stakingTiers = [
+    { tierName: 'passive',       displayName: 'Passive',       lockDays: 0,   apyRate: 0.0050, minStake: 0 },
+    { tierName: 'gold_lock',     displayName: 'Gold Lock',     lockDays: 90,  apyRate: 0.0500, minStake: 0 },
+    { tierName: 'platinum_lock', displayName: 'Platinum Lock', lockDays: 180, apyRate: 0.1500, minStake: 0 },
+  ];
+
+  for (const tier of stakingTiers) {
+    await prisma.stakingTierConfig.upsert({
+      where: { tierName: tier.tierName },
+      update: { apyRate: tier.apyRate, displayName: tier.displayName, lockDays: tier.lockDays },
+      create: tier,
+    });
+    console.log(`   ✅ ${tier.displayName}: ${tier.lockDays}d lock, ${(tier.apyRate * 100).toFixed(1)}% APY`);
+  }
 
   await prisma.systemSetting.upsert({
     where: { key: 'maintenance_mode' },
@@ -97,7 +117,7 @@ async function main() {
       role: 'SUPER_ADMIN',
       status: 'ACTIVE',
       emailVerified: true,
-      kycStatus: 'APPROVED',
+      kycStatus: 'VERIFIED',
     },
   });
 
@@ -127,7 +147,7 @@ async function main() {
       fullName: 'Alice Johnson',
       role: 'CLIENT',
       status: 'ACTIVE',
-      kycStatus: 'APPROVED',
+      kycStatus: 'VERIFIED',
       balance: 5000.0,
     },
     {
@@ -135,7 +155,7 @@ async function main() {
       fullName: 'Bob Smith',
       role: 'CLIENT',
       status: 'ACTIVE',
-      kycStatus: 'APPROVED',
+      kycStatus: 'VERIFIED',
       balance: 2500.0,
     },
     {
@@ -151,7 +171,7 @@ async function main() {
       fullName: 'Diana Prince',
       role: 'ADMIN',
       status: 'ACTIVE',
-      kycStatus: 'APPROVED',
+      kycStatus: 'VERIFIED',
       balance: 7500.0,
     },
     {

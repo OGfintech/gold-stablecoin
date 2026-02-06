@@ -35,6 +35,9 @@ model User {
   // SECURITY HARDENING: Token versioning for mass revocation
   tokenVersion   Int       @default(0) @map("token_version")
 
+  // Staking preferences
+  autoCompound   Boolean   @default(false) @map("auto_compound")
+
   createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
   lastLoginAt    DateTime? @map("last_login_at") @db.Timestamptz
@@ -73,7 +76,9 @@ enum UserStatus {
 enum KycStatus {
   NONE
   PENDING
-  APPROVED
+  VERIFIED       // Phone + ID verified
+  PREMIUM        // Enhanced docs
+  INSTITUTIONAL  // Full due diligence
   REJECTED
 }
 
@@ -397,4 +402,27 @@ model RevokedToken {
   @@index([userId])
   @@index([expiresAt])
   @@map("revoked_tokens")
+}
+
+// ============================================
+// STAKING TIER CONFIGURATION
+// Admin-configurable yield rates per lock period
+// ============================================
+
+model StakingTierConfig {
+  id          String   @id @default(uuid()) @db.Uuid
+  tierName    String   @unique @map("tier_name") @db.VarChar(50)  // passive, gold_lock, platinum_lock
+  displayName String   @map("display_name") @db.VarChar(100)      // "Passive", "Gold Lock", "Platinum Lock"
+  lockDays    Int      @map("lock_days")                           // 0, 90, 180
+  apyRate     Decimal  @map("apy_rate") @db.Decimal(8, 4)          // 0.0050, 0.0500, 0.1500
+  minStake    Decimal  @default(0) @map("min_stake") @db.Decimal(20, 8)
+  maxStake    Decimal? @map("max_stake") @db.Decimal(20, 8)        // NULL = unlimited
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy   String?  @map("updated_by") @db.Uuid
+
+  @@index([tierName])
+  @@index([isActive])
+  @@map("staking_tier_configs")
 }

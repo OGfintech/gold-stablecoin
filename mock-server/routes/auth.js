@@ -18,6 +18,7 @@ const {
 const { generateAccessToken, generateRefreshToken, requireAuth, decodeToken } = require('../middleware/auth');
 const { revokeToken, revokeAllUserTokens, RevocationReason } = require('../middleware/tokenBlacklist');
 const { createAuditLog, AuditAction, EntityType } = require('../services/auditLog.service');
+const crypto = require('crypto');
 
 // Rate limiting for auth endpoints (stricter)
 const rateLimit = require('express-rate-limit');
@@ -100,6 +101,19 @@ router.post('/register', authLimiter, async (req, res) => {
       }
     });
 
+    // Create custodial wallet automatically
+    const walletAddress = crypto.randomBytes(32).toString('hex');
+    const wallet = await prisma.wallet.create({
+      data: {
+        userId: user.id,
+        address: walletAddress,
+        balance: 0,
+        lockedBalance: 0,
+        status: 'ACTIVE'
+      },
+      select: { address: true, balance: true, status: true }
+    });
+
     // Generate tokens
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
@@ -109,7 +123,7 @@ router.post('/register', authLimiter, async (req, res) => {
       action: AuditAction.USER_CREATE,
       entityType: EntityType.USER,
       entityId: user.id,
-      newValues: { email: user.email, role: user.role },
+      newValues: { email: user.email, role: user.role, walletAddress: wallet.address },
       ipAddress: req.ip,
       userAgent: req.headers['user-agent']
     });
@@ -117,7 +131,7 @@ router.post('/register', authLimiter, async (req, res) => {
     res.status(201).json({
       success: true,
       data: {
-        user,
+        user: { ...user, wallet },
         accessToken,
         refreshToken,
         expiresIn: process.env.JWT_EXPIRES_IN || '24h'

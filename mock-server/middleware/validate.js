@@ -87,9 +87,9 @@ function validateStake(req, res, next) {
     errors.push('Invalid "amount": must be a positive integer string');
   }
   if (lockPeriod !== undefined) {
-    const validPeriods = [0, 30, 60, 90];
+    const validPeriods = [0, 90, 180];
     if (!validPeriods.includes(lockPeriod)) {
-      errors.push('Invalid "lockPeriod": must be 0, 30, 60, or 90');
+      errors.push('Invalid "lockPeriod": must be 0, 90, or 180');
     }
   }
 
