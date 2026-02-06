@@ -125,7 +125,7 @@ async function main() {
     {
       email: 'alice@example.com',
       fullName: 'Alice Johnson',
-      role: 'USER',
+      role: 'CLIENT',
       status: 'ACTIVE',
       kycStatus: 'APPROVED',
       balance: 5000.0,
@@ -133,7 +133,7 @@ async function main() {
     {
       email: 'bob@example.com',
       fullName: 'Bob Smith',
-      role: 'USER',
+      role: 'CLIENT',
       status: 'ACTIVE',
       kycStatus: 'APPROVED',
       balance: 2500.0,
@@ -141,7 +141,7 @@ async function main() {
     {
       email: 'charlie@example.com',
       fullName: 'Charlie Brown',
-      role: 'USER',
+      role: 'CLIENT',
       status: 'ACTIVE',
       kycStatus: 'PENDING',
       balance: 1000.0,
@@ -157,7 +157,7 @@ async function main() {
     {
       email: 'eve@example.com',
       fullName: 'Eve Wilson',
-      role: 'USER',
+      role: 'CLIENT',
       status: 'PENDING',
       kycStatus: 'NONE',
       balance: 0,
@@ -202,6 +202,20 @@ async function main() {
   // 5. GENESIS BLOCK & SAMPLE TRANSACTIONS
   // ============================================
   console.log('⛓️  Creating genesis block...');
+
+  // Create system zero-address wallet for mint/burn operations
+  const zeroAddress = '0000000000000000000000000000000000000000000000000000000000000000';
+  await prisma.wallet.upsert({
+    where: { address: zeroAddress },
+    update: {},
+    create: {
+      userId: adminUser.id,
+      address: zeroAddress,
+      balance: 0,
+      lockedBalance: 0,
+      status: 'ACTIVE',
+    },
+  });
 
   const genesisBlock = await prisma.block.upsert({
     where: { blockNumber: BigInt(0) },
@@ -300,15 +314,14 @@ async function main() {
   // ============================================
   console.log('📋 Creating sample audit logs...');
 
-  await prisma.auditLog.create({
-    data: {
-      adminId: adminUser.id,
-      action: 'system.seed',
-      entityType: 'system',
-      entityId: adminUser.id,
-      newValues: { action: 'Database seeded', timestamp: new Date().toISOString() },
-      ipAddress: '127.0.0.1',
-    },
+  const { createAuditLog } = require('../../services/auditLog.service');
+  await createAuditLog({
+    adminId: adminUser.id,
+    action: 'system.seed',
+    entityType: 'system',
+    entityId: adminUser.id,
+    newValues: { action: 'Database seeded', timestamp: new Date().toISOString() },
+    ipAddress: '127.0.0.1',
   });
 
   console.log('   ✅ Audit logs created');
