@@ -2,18 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* ==========================================
+   THEME: Dark Vault (default)
+   ========================================== */
+:root,
+[data-theme="dark"] {
   --foreground-rgb: 249, 250, 251;
   --background-rgb: 10, 10, 15;
   --gold-primary: #D4A843;
   --gold-gradient-start: #C5963B;
   --gold-gradient-end: #E8C65D;
+
+  /* Vault surfaces */
+  --vault-base: #0A0A0F;
   --vault-card: #13131A;
+  --vault-card-hover: #1A1A24;
+  --vault-modal: #0D0D14;
+  --vault-border: rgba(212, 168, 67, 0.15);
+
+  /* Text */
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+
+  /* Gold palette */
+  --gold-50: #FDF8E8;
+  --gold-100: #F5E6B8;
+  --gold-200: #E8C65D;
+  --gold-300: #D4A843;
+  --gold-400: #C5963B;
+  --gold-500: #B8860B;
+
+  /* Gradients */
+  --gold-gradient: linear-gradient(135deg, #C5963B 0%, #E8C65D 50%, #D4A843 100%);
+  --shimmer-color: rgba(232, 198, 93, 0.15);
+
+  /* Balance card */
+  --balance-text: #422006;
+  --balance-subtext: rgba(66, 32, 6, 0.7);
+}
+
+/* ==========================================
+   THEME: Light Gold
+   ========================================== */
+[data-theme="light"] {
+  --foreground-rgb: 30, 30, 35;
+  --background-rgb: 250, 248, 243;
+
+  /* Vault surfaces → warm whites */
+  --vault-base: #FAF8F3;
+  --vault-card: #FFFFFF;
+  --vault-card-hover: #F5F0E8;
+  --vault-modal: #FEFDFB;
+  --vault-border: rgba(180, 140, 50, 0.2);
+
+  /* Text */
+  --text-primary: #1E1E23;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+
+  /* Gold palette — richer for light bg */
+  --gold-50: #FDF8E8;
+  --gold-100: #F5E6B8;
+  --gold-200: #C5963B;
+  --gold-300: #A67C2E;
+  --gold-400: #8B6914;
+  --gold-500: #7C5C07;
+
+  /* Gradients */
+  --gold-gradient: linear-gradient(135deg, #B8860B 0%, #D4A843 50%, #C5963B 100%);
+  --shimmer-color: rgba(180, 134, 11, 0.08);
+
+  /* Balance card */
+  --balance-text: #422006;
+  --balance-subtext: rgba(66, 32, 6, 0.7);
+}
+
+/* Light theme overrides for specific patterns */
+[data-theme="light"] .text-white {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .text-gray-300 {
+  color: #4B5563;
+}
+
+[data-theme="light"] .text-gray-400 {
+  color: #6B7280;
+}
+
+[data-theme="light"] .text-gray-500 {
+  color: #9CA3AF;
+}
+
+[data-theme="light"] .text-gray-600 {
+  color: #9CA3AF;
+}
+
+[data-theme="light"] .bg-gray-700 {
+  background-color: #E5E0D5;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Gold shimmer animation for balance card */
@@ -27,7 +120,7 @@ body {
     90deg,
     transparent 0%,
     rgba(232, 198, 93, 0.08) 25%,
-    rgba(232, 198, 93, 0.15) 50%,
+    var(--shimmer-color) 50%,
     rgba(232, 198, 93, 0.08) 75%,
     transparent 100%
   );

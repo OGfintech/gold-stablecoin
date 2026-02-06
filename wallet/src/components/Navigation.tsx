@@ -1,8 +1,9 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Wallet, Send, QrCode, FileText, History, Shield } from 'lucide-react'
+import { Wallet, Send, QrCode, FileText, History, Shield, Sun, Moon } from 'lucide-react'
 
 const navItems = [
   { href: '/', label: 'Home', icon: Wallet },
@@ -14,13 +15,35 @@ const navItems = [
 
 export function Navigation() {
   const pathname = usePathname()
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+
+  useEffect(() => {
+    const stored = localStorage.getItem('sttaurx-theme') as 'dark' | 'light' | null
+    if (stored) {
+      setTheme(stored)
+      document.documentElement.setAttribute('data-theme', stored)
+    }
+  }, [])
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    document.documentElement.setAttribute('data-theme', next)
+    localStorage.setItem('sttaurx-theme', next)
+  }
 
   return (
     <>
       {/* Header */}
       <header className="p-4 border-b border-vault-border">
         <div className="flex items-center justify-between">
-          <div className="w-8" />
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-400"
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+          >
+            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
           <div className="flex items-center space-x-2">
             <img src="/icon.svg" alt="STTAURX" className="w-10 h-10" />
             <span className="text-xl font-bold text-gold-300">STTAURX Wallet</span>
