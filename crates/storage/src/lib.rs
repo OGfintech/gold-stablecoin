@@ -488,7 +488,8 @@ mod tests {
             "Test".to_string(),
             [0u8; 32],
             [1u8; 32],
-        );
+        )
+        .unwrap();
         let cert_id = cert.certificate_id;
 
         storage.put_certificate(&cert).unwrap();

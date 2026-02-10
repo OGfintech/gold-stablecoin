@@ -123,6 +123,9 @@ pub enum CoreError {
 
     #[error("Internal error: {0}")]
     InternalError(String),
+
+    #[error("Invalid amount: {0}")]
+    InvalidAmount(String),
 }
 
 #[cfg(test)]

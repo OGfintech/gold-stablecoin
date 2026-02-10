@@ -175,6 +175,7 @@ mod tests {
             [0u8; 32],
             [1u8; 32],
         )
+        .unwrap()
     }
 
     #[test]
