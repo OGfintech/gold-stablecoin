@@ -131,11 +131,3 @@ export async function decryptSecret(encrypted: string, password: string): Promis
 
   return new TextDecoder().decode(decrypted)
 }
-
-// Generate a signature for a transaction
-export async function signTransaction(message: Uint8Array, secretKey: string): Promise<string> {
-  // In production, use @noble/ed25519 or similar
-  // For now, we'll call the API which has signing capability
-  // This is just a placeholder
-  return secretKey // Would be actual signature
-}
