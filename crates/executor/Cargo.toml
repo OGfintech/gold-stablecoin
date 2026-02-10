@@ -9,5 +9,6 @@ gold-crypto = { path = "../crypto" }
 gold-state = { path = "../state" }
 rayon = { workspace = true }
 chrono = { workspace = true }
+hex = { workspace = true }
 tracing = { workspace = true }
 thiserror = { workspace = true }
