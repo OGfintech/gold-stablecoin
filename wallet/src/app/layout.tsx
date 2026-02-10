@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gray-900 text-white min-h-screen`}>
+      <body className={`${inter.className} bg-vault-base text-white min-h-screen`}>
         <Providers>
           <div className="max-w-md mx-auto min-h-screen flex flex-col">
             <Navigation />

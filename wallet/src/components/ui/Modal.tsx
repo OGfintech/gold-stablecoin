@@ -56,19 +56,19 @@ export function Modal({
       {/* Modal Content */}
       <div
         className={`
-          relative bg-gray-800 rounded-2xl w-full ${sizeStyles[size]}
-          shadow-xl border border-gray-700
+          relative bg-vault-card rounded-2xl w-full ${sizeStyles[size]}
+          shadow-xl border border-vault-border
           animate-in fade-in zoom-in-95 duration-200
         `}
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-center justify-between p-4 border-b border-gray-700">
+          <div className="flex items-center justify-between p-4 border-b border-vault-border">
             {title && <h2 className="text-lg font-semibold">{title}</h2>}
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="p-1 hover:bg-gray-700 rounded-lg transition-colors ml-auto"
+                className="p-1 hover:bg-vault-cardHover rounded-lg transition-colors ml-auto"
               >
                 <X className="w-5 h-5 text-gray-400" />
               </button>
@@ -92,7 +92,7 @@ Modal.Footer = function ModalFooter({
   className?: string
 }) {
   return (
-    <div className={`flex gap-3 mt-4 pt-4 border-t border-gray-700 ${className}`}>
+    <div className={`flex gap-3 mt-4 pt-4 border-t border-vault-border ${className}`}>
       {children}
     </div>
   )

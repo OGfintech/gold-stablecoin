@@ -25,6 +25,13 @@ pub enum MempoolError {
 
     #[error("Transaction validation failed: {0}")]
     ValidationFailed(String),
+
+    #[error("Per-account mempool limit exceeded: {sender} has {count}/{max} transactions")]
+    SenderLimitExceeded {
+        sender: String,
+        count: usize,
+        max: usize,
+    },
 }
 
 pub type MempoolResult<T> = Result<T, MempoolError>;
@@ -84,6 +91,8 @@ pub struct MempoolConfig {
     pub batch_size: usize,
     /// Transaction expiration time in seconds
     pub expiration_secs: u64,
+    /// Maximum transactions per sender in the mempool
+    pub max_per_sender: usize,
 }
 
 impl Default for MempoolConfig {
@@ -92,6 +101,7 @@ impl Default for MempoolConfig {
             max_size: 100_000,
             batch_size: 50_000,
             expiration_secs: 3600, // 1 hour
+            max_per_sender: 20,
         }
     }
 }
@@ -154,21 +164,46 @@ impl Mempool {
             return Err(MempoolError::MempoolFull(self.config.max_size));
         }
 
-        // Verify signature
+        // Check per-sender limit
+        let sender_count = self
+            .by_sender
+            .get(&tx.from)
+            .map(|v| v.len())
+            .unwrap_or(0);
+
+        if sender_count >= self.config.max_per_sender {
+            self.stats.write().total_rejected += 1;
+            return Err(MempoolError::SenderLimitExceeded {
+                sender: hex::encode(tx.from.0),
+                count: sender_count,
+                max: self.config.max_per_sender,
+            });
+        }
+
+        // SECURITY: Verify signature FIRST (before any state lookups).
+        // This prevents mempool flooding with invalid transactions that
+        // would otherwise trigger expensive state reads for nonce validation.
         verify_transaction(&tx).map_err(|_| MempoolError::InvalidSignature)?;
 
-        // Verify nonce
+        // Verify nonce (use checked arithmetic to prevent overflow)
         let current_nonce = self.state.get_nonce(&tx.from);
-        if tx.nonce != current_nonce + 1 {
+        let next_nonce = current_nonce.checked_add(1).ok_or_else(|| {
+            self.stats.write().total_rejected += 1;
+            MempoolError::InvalidNonce {
+                expected: current_nonce,
+                got: tx.nonce,
+            }
+        })?;
+        if tx.nonce != next_nonce {
             // Allow some gap for pending transactions
             let pending_count = self
                 .by_sender
                 .get(&tx.from)
                 .map(|v| v.len())
                 .unwrap_or(0);
-            let expected_nonce = current_nonce + 1 + pending_count as u64;
+            let expected_nonce = next_nonce.saturating_add(pending_count as u64);
 
-            if tx.nonce > expected_nonce + 10 {
+            if tx.nonce > expected_nonce.saturating_add(10) {
                 // Too far ahead
                 self.stats.write().total_rejected += 1;
                 return Err(MempoolError::InvalidNonce {
@@ -402,6 +437,32 @@ mod tests {
     }
 
     #[test]
+    fn test_per_account_limit() {
+        let mempool = create_test_mempool();
+        let keypair = Keypair::generate();
+
+        // Create account in state
+        mempool.state.get_or_create_account(keypair.address());
+
+        // Fill up to the per-account limit (20)
+        for i in 1..=20 {
+            let tx = create_signed_tx(&keypair, i);
+            assert!(mempool.add_transaction(tx).is_ok(), "Tx {} should succeed", i);
+        }
+
+        // 21st transaction from same sender should be rejected
+        let tx_21 = create_signed_tx(&keypair, 21);
+        let result = mempool.add_transaction(tx_21);
+        assert!(result.is_err());
+
+        // Different sender should still be allowed
+        let keypair2 = Keypair::generate();
+        mempool.state.get_or_create_account(keypair2.address());
+        let tx_other = create_signed_tx(&keypair2, 1);
+        assert!(mempool.add_transaction(tx_other).is_ok());
+    }
+
+    #[test]
     fn test_pending_for_address() {
         let mempool = create_test_mempool();
         let keypair = Keypair::generate();
@@ -415,5 +476,21 @@ mod tests {
 
         let pending = mempool.get_pending_for_address(&keypair.address());
         assert_eq!(pending.len(), 3);
+    }
+
+    #[test]
+    fn test_invalid_signature_rejected() {
+        let mempool = create_test_mempool();
+        let keypair = Keypair::generate();
+
+        mempool.state.get_or_create_account(keypair.address());
+
+        // Create a transaction with valid signature, then corrupt it
+        let mut tx = create_signed_tx(&keypair, 1);
+        // Corrupt the signature
+        tx.signature[0] ^= 0xFF;
+
+        let result = mempool.add_transaction(tx);
+        assert!(matches!(result, Err(MempoolError::InvalidSignature)));
     }
 }

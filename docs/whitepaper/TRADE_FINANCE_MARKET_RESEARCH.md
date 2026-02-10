@@ -2,13 +2,13 @@
 
 **Document Type:** Market Research
 **Date:** February 3, 2026
-**Purpose:** Support for STTAURX Staking Yield Model
+**Purpose:** Support for AUSRX Staking Yield Model
 
 ---
 
 ## Executive Summary
 
-The global trade finance market represents a massive opportunity for STTAURX's Smart Letter of Credit model. With the LC market valued at $4.7 billion in 2025 and the broader trade finance market at $55-65 billion, even a small market share can generate substantial, sustainable yield for stakers.
+The global trade finance market represents a massive opportunity for AUSRX's Smart Letter of Credit model. With the LC market valued at $4.7 billion in 2025 and the broader trade finance market at $55-65 billion, even a small market share can generate substantial, sustainable yield for stakers.
 
 ---
 
@@ -140,7 +140,7 @@ The global trade finance market represents a massive opportunity for STTAURX's S
 
 ---
 
-## STTAURX Market Opportunity Analysis
+## AUSRX Market Opportunity Analysis
 
 ### Addressable Market Calculation
 
@@ -150,7 +150,7 @@ Letter of Credit Segment (24%):        $13.91 billion
 Commodity Trade Subset (~40%):         $5.56 billion
 Blockchain/Digital LC Growth:          15-20% annually
 
-If STTAURX captures:
+If AUSRX captures:
 - 0.1% of LC market = $13.9 million in fees
 - 0.5% of LC market = $69.5 million in fees
 - 1.0% of LC market = $139 million in fees
@@ -162,7 +162,7 @@ With $100M staked at 1.5% LC fees:
 
 ### Competitive Positioning
 
-| Traditional LC | STTAURX Smart LC |
+| Traditional LC | AUSRX Smart LC |
 |----------------|------------------|
 | 3-5 days issuance | Minutes |
 | Paper documents | Blockchain verified |
@@ -219,7 +219,7 @@ With $100M staked at 1.5% LC fees:
 
 ---
 
-## Implications for STTAURX
+## Implications for AUSRX
 
 ### Validation Points
 

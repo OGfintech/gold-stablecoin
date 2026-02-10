@@ -106,6 +106,7 @@ pub struct Transaction {
     pub timestamp: DateTime<Utc>,
 
     /// Ed25519 signature
+    #[serde(with = "crate::serde_sig_hex")]
     pub signature: Signature,
 }
 

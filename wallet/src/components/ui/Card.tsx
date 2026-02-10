@@ -11,9 +11,9 @@ interface CardProps {
 }
 
 const variantStyles: Record<CardVariant, string> = {
-  default: 'bg-gray-800',
-  gradient: 'bg-gradient-to-br from-yellow-600 to-yellow-800 shadow-lg',
-  interactive: 'bg-gray-800 hover:bg-gray-750 transition-colors border border-gray-700',
+  default: 'bg-vault-card',
+  gradient: 'bg-gradient-to-br from-[#C5963B] via-[#D4A843] to-[#E8C65D] shadow-lg',
+  interactive: 'bg-vault-card hover:bg-vault-cardHover transition-colors border border-vault-border',
 }
 
 const paddingStyles = {
@@ -72,7 +72,7 @@ Card.Title = function CardTitle({
 }
 
 Card.Divider = function CardDivider({ className = '' }: { className?: string }) {
-  return <div className={`border-t border-gray-700 my-4 ${className}`} />
+  return <div className={`border-t border-vault-border my-4 ${className}`} />
 }
 
 Card.Row = function CardRow({

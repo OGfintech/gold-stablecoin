@@ -11,5 +11,6 @@ dashmap = { workspace = true }
 parking_lot = { workspace = true }
 tokio = { workspace = true }
 chrono = { workspace = true }
+hex = { workspace = true }
 tracing = { workspace = true }
 thiserror = { workspace = true }

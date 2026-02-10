@@ -51,8 +51,8 @@ export function WalletStatus({
             </>
           ) : (
             <>
-              <Lock className="w-4 h-4 text-yellow-400" />
-              <span className="text-yellow-400 text-sm">Wallet Locked</span>
+              <Lock className="w-4 h-4 text-gold-300" />
+              <span className="text-gold-300 text-sm">Wallet Locked</span>
             </>
           )}
         </div>
@@ -67,7 +67,7 @@ export function WalletStatus({
         ) : (
           <button
             onClick={() => setShowUnlockForm(!showUnlockForm)}
-            className="text-yellow-400 hover:text-yellow-300 text-sm transition-colors"
+            className="text-gold-300 hover:text-gold-200 text-sm transition-colors"
           >
             Unlock
           </button>
@@ -76,7 +76,7 @@ export function WalletStatus({
 
       {/* Unlock Form */}
       {showUnlockForm && !isUnlocked && (
-        <div className="mt-4 pt-4 border-t border-gray-700 space-y-3">
+        <div className="mt-4 pt-4 border-t border-vault-border space-y-3">
           <Input
             type="password"
             value={secretInput}

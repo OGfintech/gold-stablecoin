@@ -75,7 +75,7 @@ function TransactionRow({
     : config.description
 
   return (
-    <div className="p-4 hover:bg-gray-750 transition-colors">
+    <div className="p-4 hover:bg-vault-cardHover transition-colors">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <IconBadge color={config.color}>
@@ -113,13 +113,13 @@ export function TransactionList({
   return (
     <Card padding="sm" className={`overflow-hidden ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-700">
+      <div className="flex items-center justify-between p-4 border-b border-vault-border">
         <h3 className="font-semibold flex items-center gap-2">
-          <Coins className="w-4 h-4 text-yellow-400" />
+          <Coins className="w-4 h-4 text-gold-300" />
           Recent Transactions
         </h3>
         {showViewAll && (
-          <Link href={viewAllHref} className="text-yellow-400 text-sm hover:underline">
+          <Link href={viewAllHref} className="text-gold-300 text-sm hover:underline">
             View All
           </Link>
         )}

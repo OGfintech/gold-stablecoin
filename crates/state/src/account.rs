@@ -60,16 +60,18 @@ impl Account {
         Ok(())
     }
 
-    /// Increment nonce
-    pub fn increment_nonce(&mut self) {
-        self.nonce += 1;
+    /// Increment nonce (returns error on overflow)
+    pub fn increment_nonce(&mut self) -> Result<(), crate::StateError> {
+        self.nonce = self.nonce.checked_add(1).ok_or(crate::StateError::NonceOverflow)?;
+        Ok(())
     }
 
-    /// Check nonce validity
+    /// Check nonce validity (handles overflow safely)
     pub fn check_nonce(&self, tx_nonce: u64) -> Result<(), crate::StateError> {
-        if tx_nonce != self.nonce + 1 {
+        let expected = self.nonce.checked_add(1).ok_or(crate::StateError::NonceOverflow)?;
+        if tx_nonce != expected {
             return Err(crate::StateError::NonceMismatch {
-                expected: self.nonce + 1,
+                expected,
                 got: tx_nonce,
             });
         }
@@ -157,10 +159,46 @@ mod tests {
         let mut account = Account::new(addr);
 
         assert!(account.check_nonce(1).is_ok());
-        account.increment_nonce();
+        account.increment_nonce().unwrap();
 
         assert!(account.check_nonce(2).is_ok());
         assert!(account.check_nonce(1).is_err());
         assert!(account.check_nonce(3).is_err());
+    }
+
+    #[test]
+    fn test_nonce_overflow() {
+        let addr = Address([1u8; 32]);
+        let mut account = Account::new(addr);
+        account.nonce = u64::MAX;
+
+        assert!(account.increment_nonce().is_err());
+        assert_eq!(account.nonce, u64::MAX);
+    }
+
+    #[test]
+    fn test_check_nonce_overflow() {
+        let addr = Address([1u8; 32]);
+        let mut account = Account::new(addr);
+        account.nonce = u64::MAX;
+
+        // Both should return NonceOverflow (not NonceMismatch)
+        assert!(matches!(account.check_nonce(0), Err(crate::StateError::NonceOverflow)));
+        assert!(matches!(account.check_nonce(u64::MAX), Err(crate::StateError::NonceOverflow)));
+    }
+
+    #[test]
+    fn test_nonce_near_max() {
+        let addr = Address([1u8; 32]);
+        let mut account = Account::new(addr);
+        account.nonce = u64::MAX - 1;
+
+        // Last valid increment should succeed
+        assert!(account.increment_nonce().is_ok());
+        assert_eq!(account.nonce, u64::MAX);
+
+        // Now overflow should fail
+        assert!(account.increment_nonce().is_err());
+        assert_eq!(account.nonce, u64::MAX);
     }
 }

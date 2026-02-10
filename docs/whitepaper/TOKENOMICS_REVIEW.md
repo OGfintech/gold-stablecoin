@@ -1,4 +1,4 @@
-# STTAURX Tokenomics Review
+# AUSRX Tokenomics Review
 
 **Document Type:** Founders Decision Document
 **Status:** Draft for Review
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-**Key Decision Required:** Should STTAURX include traditional crypto allocation mechanisms (pre-mine, team tokens, investor tokens, airdrops)?
+**Key Decision Required:** Should AUSRX include traditional crypto allocation mechanisms (pre-mine, team tokens, investor tokens, airdrops)?
 
 **Recommendation:** No token allocations. Use equity for team/investors, fee incentives for users. Every token must be backed by user-deposited gold.
 
@@ -19,8 +19,8 @@
 
 | Attribute | Value | Notes |
 |-----------|-------|-------|
-| **Name** | STTAURX Gold | Or "AU Gold Block" |
-| **Symbol** | GOLD / STTAURX | To be confirmed |
+| **Name** | AUSRX Gold | Or "AU Gold Block" |
+| **Symbol** | GOLD / AUSRX | To be confirmed |
 | **Backing** | 1 token = 1 gram gold | HSBC custody |
 | **Supply Model** | Dynamic (mint/burn) | Based on gold deposits |
 | **Decimals** | 18 | Standard divisibility |
@@ -30,7 +30,7 @@
 
 ## 2. The Core Difference: Gold-Backed vs Typical Crypto
 
-| | Typical Crypto | Gold-Backed (STTAURX) |
+| | Typical Crypto | Gold-Backed (AUSRX) |
 |---|----------------|----------------------|
 | **Token Value** | Speculative | Physical gold |
 | **Giving Away Tokens** | $0 cost | Giving away gold |
@@ -131,17 +131,20 @@ Even without allocations, the platform needs tokens for operations:
 
 ---
 
-## 6. Proposed Fee Structure
+## 6. Fee Structure (DECIDED)
 
-| Action | Proposed Fee | Recipient | Notes |
-|--------|--------------|-----------|-------|
-| **Minting** | 0.5% | Platform | One-time on deposit |
-| **Transfer** | 0.1% | Platform | Peer-to-peer sends |
-| **Redemption** | 1.0% | Platform + HSBC | Covers custody/logistics |
-| **Marketplace Trade** | 0.25% | Platform | Buy/sell on marketplace |
-| **Staking Withdrawal** | 0% | - | No penalty |
+**Strategy:** 10% below market rates, with flexibility to adjust.
 
-**Competitive Note:** PAXG charges 0.02% transfer fee. Consider if 0.1% is competitive.
+| Action | Fee | Recipient | Competitor (PAXG) |
+|--------|-----|-----------|-------------------|
+| **Minting** | 0.027% | Platform | 0.03% + 1oz min |
+| **Transfer** | 0.018% | Platform | 0.02% |
+| **Redemption (Fiat)** | 0.18% | Platform + HSBC | 0.2%+ |
+| **Redemption (Physical)** | 1.35% | Platform + HSBC + Logistics | N/A |
+| **Marketplace Trade** | 0.225% | Platform | 0.25% (standard) |
+| **Staking Entry/Exit** | 0% | - | N/A |
+
+**Rationale:** Undercut competitors on price while providing superior value (HSBC custody, staking yield, certificate verification). Fees subject to adjustment based on market conditions.
 
 ---
 
@@ -160,19 +163,19 @@ Even without allocations, the platform needs tokens for operations:
 
 ## 8. Proposed Whitepaper Statement
 
-> *"Unlike speculative cryptocurrencies, STTAURX tokens are not pre-mined, allocated to insiders, or distributed via airdrops. Every token in circulation represents real gold deposited by real users. The platform maintains operational liquidity through company-purchased reserves, and staking rewards are generated from platform transaction fees—not token inflation."*
+> *"Unlike speculative cryptocurrencies, AUSRX tokens are not pre-mined, allocated to insiders, or distributed via airdrops. Every token in circulation represents real gold deposited by real users. The platform maintains operational liquidity through company-purchased reserves, and staking rewards are generated from platform transaction fees—not token inflation."*
 
 ---
 
 ## 9. Open Questions for Founders
 
-1. **Token Symbol:** GOLD vs STTAURX vs something else?
-2. **Yield Source:** What specifically generates the 5% APY?
-3. **Fee Levels:** Are the proposed fees competitive?
-4. **Redemption:** Minimum amount? Timeline? Physical delivery options?
-5. **Staking:** Lock-up period? Minimum stake? Distribution frequency?
+1. ~~**Token Symbol:** GOLD vs AUSRX vs something else?~~ ✅ **DECIDED: AUSRX**
+2. ~~**Yield Source:** What specifically generates the 5% APY?~~ ✅ **DECIDED: Smart LC fees**
+3. ~~**Fee Levels:** Are the proposed fees competitive?~~ ✅ **DECIDED: 10% below market**
+4. **Redemption:** Minimum amount? Timeline? Physical delivery options? *(Defaults set: 10g fiat, 100g physical)*
+5. **Staking:** Lock-up period? Minimum stake? Distribution frequency? *(Defaults set: No lock-up, no minimum)*
 6. **Multi-Asset:** Separate tokens per metal, or basket approach?
-7. **Governance Token:** Separate utility token planned, or just GOLD?
+7. **Governance Token:** Separate utility token planned, or just AUSRX?
 
 ---
 

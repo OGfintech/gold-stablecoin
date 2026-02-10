@@ -15,7 +15,7 @@ interface ButtonBaseProps {
   loading?: boolean
 }
 
-interface ButtonAsButtonProps extends ButtonBaseProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
+interface ButtonAsButtonProps extends ButtonBaseProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'children'> {
   href?: never
 }
 
@@ -26,9 +26,9 @@ interface ButtonAsLinkProps extends ButtonBaseProps {
 type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-yellow-600 hover:bg-yellow-700 text-white',
-  secondary: 'bg-gray-700 hover:bg-gray-600 text-white',
-  ghost: 'bg-transparent hover:bg-gray-800 text-gray-400 hover:text-white',
+  primary: 'bg-gold-300 hover:bg-gold-200 text-vault-base',
+  secondary: 'bg-vault-cardHover hover:bg-gray-700 text-white border border-vault-border',
+  ghost: 'bg-transparent hover:bg-vault-card text-gray-400 hover:text-white',
   danger: 'bg-red-600 hover:bg-red-700 text-white',
 }
 

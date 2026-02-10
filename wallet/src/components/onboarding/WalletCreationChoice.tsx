@@ -32,7 +32,10 @@ export function WalletCreationChoice() {
         publicKey: cleanKey, // Simplified
         secretKey: cleanKey,
       }
-      localStorage.setItem('au_gold_wallet', JSON.stringify(importedWallet))
+      localStorage.setItem('au_gold_wallet', JSON.stringify({
+        address: importedWallet.address,
+        publicKey: importedWallet.publicKey,
+      }))
       goToStep('wallet-success')
     } catch (error) {
       setImportError('Failed to import wallet. Please check your secret key and try again.')

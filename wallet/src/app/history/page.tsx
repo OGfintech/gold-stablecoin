@@ -13,7 +13,7 @@ export default function HistoryPage() {
     queryKey: ['wallet-transactions', wallet.address],
     queryFn: () => walletApi.getTransactions(wallet.address!),
     enabled: !!wallet.address,
-    refetchInterval: 10000,
+    refetchInterval: 60000,
   })
 
   if (!wallet.address) {

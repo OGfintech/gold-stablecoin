@@ -28,6 +28,9 @@ pub enum StateError {
     #[error("Nonce mismatch: expected {expected}, got {got}")]
     NonceMismatch { expected: u64, got: u64 },
 
+    #[error("Nonce overflow: account nonce at maximum value")]
+    NonceOverflow,
+
     #[error("State error: {0}")]
     InternalError(String),
 }

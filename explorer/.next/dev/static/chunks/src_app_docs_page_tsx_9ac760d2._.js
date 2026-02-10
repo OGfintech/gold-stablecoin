@@ -239,7 +239,7 @@ const docs = [
             columnNumber: 11
         }, ("TURBOPACK compile-time value", void 0)),
         status: 'planning',
-        fileName: 'ONBOARDING_BUCKETS.md',
+        fileName: 'blockchain/ONBOARDING_BUCKETS.md',
         sections: [
             'Bucket 1: Wallet Onboarding',
             'Bucket 2: Deposit Flow (USDT, Bank, Upload, Cash)',
@@ -261,7 +261,7 @@ const docs = [
             columnNumber: 11
         }, ("TURBOPACK compile-time value", void 0)),
         status: 'in_progress',
-        fileName: 'USER_ONBOARDING_PLAN.md',
+        fileName: 'blockchain/USER_ONBOARDING_PLAN.md',
         sections: [
             'Phase 1: Welcome Flow ✓',
             'Phase 2: Wallet Creation',
@@ -283,7 +283,7 @@ const docs = [
             columnNumber: 11
         }, ("TURBOPACK compile-time value", void 0)),
         status: 'in_progress',
-        fileName: 'ADMIN_WORKFLOW_PLAN.md',
+        fileName: 'blockchain/ADMIN_WORKFLOW_PLAN.md',
         sections: [
             'Phase 1: Core Admin Functions',
             'Phase 2: Authentication',
@@ -306,7 +306,7 @@ const docs = [
             columnNumber: 11
         }, ("TURBOPACK compile-time value", void 0)),
         status: 'in_progress',
-        fileName: 'MARKETPLACE_PLAN.md',
+        fileName: 'marketplace/MARKETPLACE_PLAN.md',
         sections: [
             'Phase 2.1: Core Setup ✓',
             'Phase 2.2: Public Pages ✓',
@@ -329,7 +329,7 @@ const docs = [
             columnNumber: 11
         }, ("TURBOPACK compile-time value", void 0)),
         status: 'complete',
-        fileName: 'SECURITY_PORTAL.md',
+        fileName: 'blockchain/SECURITY_PORTAL.md',
         sections: [
             'Voice Activation ("Initialize Protocol OG") ✓',
             'Keyboard Shortcut (Ctrl+Shift+A) ✓',
@@ -353,7 +353,7 @@ const docs = [
             columnNumber: 11
         }, ("TURBOPACK compile-time value", void 0)),
         status: 'planning',
-        fileName: 'SECURITY_ADMIN_PLAN.md',
+        fileName: 'blockchain/SECURITY_ADMIN_PLAN.md',
         sections: [
             'Phase 1: Backend API (securitySettings.json)',
             'Phase 2: Admin UI (/admin/security)',

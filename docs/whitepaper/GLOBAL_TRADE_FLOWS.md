@@ -1,4 +1,4 @@
-# Global Trade Flows & STTAURX Market Opportunity
+# Global Trade Flows & AUSRX Market Opportunity
 
 **Document Type:** Market Research & Strategic Analysis
 **Date:** February 3, 2026
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Global trade in 2025 exceeds **$6.5 trillion** for China alone, with significant growth in the China-Latin America corridor. This document maps trade flows relevant to STTAURX's Smart Letter of Credit platform, with particular emphasis on Mexico as a strategic market.
+Global trade in 2025 exceeds **$6.5 trillion** for China alone, with significant growth in the China-Latin America corridor. This document maps trade flows relevant to AUSRX's Smart Letter of Credit platform, with particular emphasis on Mexico as a strategic market.
 
 ---
 
@@ -204,7 +204,7 @@ Mexico is experiencing a **nearshoring boom** as companies relocate manufacturin
     • Chinese factories opening in Mexico
 ```
 
-### Why Mexico Matters for STTAURX
+### Why Mexico Matters for AUSRX
 
 | Factor | Opportunity |
 |--------|-------------|
@@ -255,13 +255,13 @@ Mexico is experiencing a **nearshoring boom** as companies relocate manufacturin
 
 ---
 
-## STTAURX Market Opportunity
+## AUSRX Market Opportunity
 
 ### Target Market Sizing
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    STTAURX ADDRESSABLE MARKET                               │
+│                    AUSRX ADDRESSABLE MARKET                               │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 Global Trade Finance Market (2025):           $55.3 Billion
@@ -277,7 +277,7 @@ Digital/Blockchain LC Growth (15%/yr):        $800M+ (2026)
                                                     │
                                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  STTAURX Target: 0.1% - 1.0% of LC Market = $13M - $133M in fees           │
+│  AUSRX Target: 0.1% - 1.0% of LC Market = $13M - $133M in fees           │
 │  With Mexico Office: Direct access to $140B China-Mexico corridor          │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -290,7 +290,7 @@ Digital/Blockchain LC Growth (15%/yr):        $800M+ (2026)
 └─────────────────────────────────────────────────────────────────────────────┘
 
                             ┌───────────────────┐
-                            │  STTAURX MEXICO   │
+                            │  AUSRX MEXICO   │
                             │     OFFICE        │
                             └─────────┬─────────┘
                                       │
@@ -322,12 +322,12 @@ Digital/Blockchain LC Growth (15%/yr):        $800M+ (2026)
 | China Trade | $6.54 trillion | World's largest trader |
 | China-LatAm | $550 billion | +6.5% growth, fastest corridor |
 | Mexico-China | $139.7 billion | +8.2% growth |
-| LC Market | $13+ billion | STTAURX core business |
+| LC Market | $13+ billion | AUSRX core business |
 | Commodity LC | $5+ billion | Primary target segment |
 
 ### Strategic Positioning
 
-> *"With offices in Mexico, STTAURX is strategically positioned at the intersection of the world's fastest-growing trade corridor. The $550 billion China-Latin America trade flow, combined with Mexico's nearshoring boom, creates unprecedented demand for efficient, transparent trade finance solutions. Our Smart Letter of Credit platform directly addresses this $13+ billion market opportunity."*
+> *"With offices in Mexico, AUSRX is strategically positioned at the intersection of the world's fastest-growing trade corridor. The $550 billion China-Latin America trade flow, combined with Mexico's nearshoring boom, creates unprecedented demand for efficient, transparent trade finance solutions. Our Smart Letter of Credit platform directly addresses this $13+ billion market opportunity."*
 
 ---
 

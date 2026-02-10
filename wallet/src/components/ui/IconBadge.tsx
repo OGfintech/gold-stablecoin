@@ -12,20 +12,20 @@ interface IconBadgeProps {
 
 const colorStyles: Record<IconBadgeColor, { bg: string; icon: string }> = {
   primary: {
-    bg: 'bg-yellow-500/20',
-    icon: 'text-yellow-400',
+    bg: 'bg-gold-300/20',
+    icon: 'text-gold-200',
   },
   success: {
-    bg: 'bg-green-500/20',
-    icon: 'text-green-400',
+    bg: 'bg-emerald-500/20',
+    icon: 'text-emerald-400',
   },
   danger: {
     bg: 'bg-red-500/20',
     icon: 'text-red-400',
   },
   warning: {
-    bg: 'bg-yellow-500/20',
-    icon: 'text-yellow-400',
+    bg: 'bg-amber-500/20',
+    icon: 'text-amber-400',
   },
   info: {
     bg: 'bg-blue-500/20',
@@ -93,10 +93,10 @@ export function GradientBadge({
     <div
       className={`
         rounded-full flex items-center justify-center
-        bg-gradient-to-br from-yellow-400 to-yellow-600
+        bg-gradient-to-br from-[#D4A843] to-[#C5963B]
         ${sizeStyle.container}
         ${sizeStyle.icon}
-        text-black
+        text-vault-base
         ${className}
       `}
     >

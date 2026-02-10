@@ -7,6 +7,7 @@ import { walletApi, formatTokenAmount, parseTokenAmount, shortenAddress } from '
 import { Send, ArrowLeft, CheckCircle, Copy, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { Card, Button, Input, Modal, Alert, IconBadge } from '@/components/ui'
+import { signTransaction } from '@/lib/signing'
 
 // Validation constants
 const ADDRESS_REGEX = /^[a-fA-F0-9]{64}$/
@@ -145,21 +146,35 @@ export default function SendPage() {
   // Send mutation
   const sendMutation = useMutation({
     mutationFn: async () => {
-      // Get secret key from session storage
+      // Get secret key from session (will be removed in P0.5-09)
       const secretKey = sessionStorage.getItem('wallet_secret')
       if (!secretKey) {
         throw new Error('Wallet is locked. Please unlock to send.')
       }
 
-      // Call the transfer API
+      const amount = parseTokenAmount(form.amount)
+
+      // Sign transaction locally -- private key NEVER sent to server
+      const signature = await signTransaction(
+        {
+          from: wallet.address!,
+          to: form.recipient,
+          amount,
+          nonce: nonce,
+          memo: form.memo || undefined,
+        },
+        secretKey
+      )
+
+      // Send ONLY the signature, not the private key
       const result = await walletApi.transfer({
         from: wallet.address!,
         public_key: wallet.publicKey!,
         nonce: nonce,
         to: form.recipient,
-        amount: parseTokenAmount(form.amount),
+        amount,
         memo: form.memo || undefined,
-        signature: secretKey, // In production, would sign the tx locally
+        signature,  // Now a real Ed25519 signature
       })
 
       return result

@@ -79,10 +79,22 @@ impl GoldCertificate {
         hsbc_branch: String,
         document_hash: Hash,
         registered_by: [u8; 32],
-    ) -> Self {
-        let gold_amount_grams = gold_amount_oz * 31.1035;
+    ) -> CoreResult<Self> {
+        // Validate gold amount before any conversion
+        if gold_amount_oz.is_nan() {
+            return Err(CoreError::InvalidAmount("NaN is not a valid gold amount".into()));
+        }
+        if gold_amount_oz.is_infinite() {
+            return Err(CoreError::InvalidAmount("Infinite is not a valid gold amount".into()));
+        }
+        if gold_amount_oz < 0.0 {
+            return Err(CoreError::InvalidAmount("Gold amount cannot be negative".into()));
+        }
+        if gold_amount_oz > (u128::MAX as f64 / TOKEN_BASE as f64 / 31.1035) {
+            return Err(CoreError::InvalidAmount("Gold amount would overflow token supply".into()));
+        }
 
-        // 1 token per gram of gold
+        let gold_amount_grams = gold_amount_oz * 31.1035;
         let max_mintable = (gold_amount_grams * TOKEN_BASE as f64) as TokenAmount;
 
         // Generate certificate ID from data
@@ -97,7 +109,7 @@ impl GoldCertificate {
         let mut certificate_id = [0u8; 32];
         certificate_id.copy_from_slice(&result);
 
-        Self {
+        Ok(Self {
             certificate_id,
             hsbc_reference,
             gold_amount_oz,
@@ -111,7 +123,7 @@ impl GoldCertificate {
             registered_at: Utc::now(),
             registered_by,
             notes: None,
-        }
+        })
     }
 
     /// Get the remaining mintable amount
@@ -266,6 +278,7 @@ mod tests {
             [0u8; 32],
             [1u8; 32],
         )
+        .unwrap()
     }
 
     #[test]
@@ -327,5 +340,57 @@ mod tests {
 
         assert!(cert.reactivate().is_ok());
         assert_eq!(cert.status, CertificateStatus::Active);
+    }
+
+    #[test]
+    fn test_mint_rejects_nan() {
+        let result = GoldCertificate::new(
+            "HSBC-TEST-NAN".to_string(),
+            f64::NAN,
+            Utc::now(),
+            "London".to_string(),
+            [0u8; 32],
+            [1u8; 32],
+        );
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_mint_rejects_infinity() {
+        let result = GoldCertificate::new(
+            "HSBC-TEST-INF".to_string(),
+            f64::INFINITY,
+            Utc::now(),
+            "London".to_string(),
+            [0u8; 32],
+            [1u8; 32],
+        );
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_mint_rejects_negative() {
+        let result = GoldCertificate::new(
+            "HSBC-TEST-NEG".to_string(),
+            -100.0,
+            Utc::now(),
+            "London".to_string(),
+            [0u8; 32],
+            [1u8; 32],
+        );
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_mint_rejects_overflow() {
+        let result = GoldCertificate::new(
+            "HSBC-TEST-OVF".to_string(),
+            f64::MAX,
+            Utc::now(),
+            "London".to_string(),
+            [0u8; 32],
+            [1u8; 32],
+        );
+        assert!(result.is_err());
     }
 }

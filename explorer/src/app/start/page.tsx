@@ -133,9 +133,6 @@ function Octagon({ icon: Icon, label, color, isActive }: {
 // ============================================
 // MAIN COMPONENT
 // ============================================
-// Password configuration
-const PASSWORD = 'AUTrade88'
-
 export default function SecurityStartPage() {
   const router = useRouter()
   const [phase, setPhase] = useState<'standby' | 'animating' | 'password' | 'granted'>('standby')
@@ -598,14 +595,24 @@ export default function SecurityStartPage() {
               <div style={{ color: '#9CA3AF', fontSize: '0.875rem', marginTop: '0.5rem' }}>Maximum attempts exceeded</div>
             </div>
           ) : (
-            <form onSubmit={(e) => {
+            <form onSubmit={async (e) => {
               e.preventDefault()
-              if (password === PASSWORD) {
-                setPhase('granted')
-              } else {
-                setAttempts(prev => prev + 1)
-                setError(`Access Denied - Invalid Credentials (Attempt ${attempts + 1}/5)`)
-                setPassword('')
+              try {
+                const res = await fetch('http://localhost:3001/api/v1/auth/verify-portal', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ password }),
+                })
+                if (res.ok) {
+                  setPhase('granted')
+                } else {
+                  setAttempts(prev => prev + 1)
+                  setError(`Access Denied - Invalid Credentials (Attempt ${attempts + 1}/5)`)
+                  setPassword('')
+                  setTimeout(() => setError(''), 3000)
+                }
+              } catch {
+                setError('Connection failed. Is the server running?')
                 setTimeout(() => setError(''), 3000)
               }
             }}>

@@ -29,6 +29,7 @@ pub struct BlockHeader {
     pub producer: [u8; 32],
 
     /// Block producer's signature
+    #[serde(with = "crate::serde_sig_hex")]
     pub signature: [u8; 64],
 }
 

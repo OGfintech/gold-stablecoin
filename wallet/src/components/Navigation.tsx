@@ -1,8 +1,9 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Wallet, Send, QrCode, FileText, History } from 'lucide-react'
+import { Wallet, Send, QrCode, FileText, History, Shield, Sun, Moon } from 'lucide-react'
 
 const navItems = [
   { href: '/', label: 'Home', icon: Wallet },
@@ -14,19 +15,53 @@ const navItems = [
 
 export function Navigation() {
   const pathname = usePathname()
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+
+  useEffect(() => {
+    const stored = localStorage.getItem('sttaurx-theme') as 'dark' | 'light' | null
+    if (stored) {
+      setTheme(stored)
+      document.documentElement.setAttribute('data-theme', stored)
+    }
+  }, [])
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    document.documentElement.setAttribute('data-theme', next)
+    localStorage.setItem('sttaurx-theme', next)
+  }
 
   return (
     <>
       {/* Header */}
-      <header className="p-4 border-b border-gray-800">
-        <div className="flex items-center justify-center space-x-2">
-          <img src="/icon.svg" alt="STTAURX" className="w-10 h-10" />
-          <span className="text-xl font-bold text-yellow-500">STTAURX Wallet</span>
+      <header className="p-4 border-b border-vault-border">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg transition-colors text-gray-600 hover:text-gray-400"
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+          >
+            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+          <div className="flex items-center space-x-2">
+            <img src="/icon.svg" alt="STTAURX" className="w-10 h-10" />
+            <span className="text-xl font-bold text-gold-300">STTAURX Wallet</span>
+          </div>
+          <Link
+            href="/admin"
+            className={`p-2 rounded-lg transition-colors ${
+              pathname === '/admin' ? 'text-gold-300 bg-gold-300/10' : 'text-gray-600 hover:text-gray-400'
+            }`}
+            title="Admin Panel"
+          >
+            <Shield className="w-5 h-5" />
+          </Link>
         </div>
       </header>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 max-w-md mx-auto">
+      <nav className="fixed bottom-0 left-0 right-0 bg-vault-card border-t border-vault-border max-w-md mx-auto">
         <div className="flex items-center justify-around py-2">
           {navItems.map((item) => {
             const Icon = item.icon
@@ -37,8 +72,8 @@ export function Navigation() {
                 href={item.href}
                 className={`flex flex-col items-center py-2 px-4 rounded-lg transition-colors ${
                   isActive
-                    ? 'text-yellow-500'
-                    : 'text-gray-400 hover:text-white'
+                    ? 'text-gold-300'
+                    : 'text-gray-500 hover:text-gray-300'
                 }`}
               >
                 <Icon className="w-5 h-5" />

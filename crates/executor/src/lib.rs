@@ -106,11 +106,14 @@ impl Executor {
         // Validate
         self.validate_transaction(tx)?;
 
-        // Check nonce
+        // Check nonce (use checked_add to prevent overflow)
         let current_nonce = self.state.get_nonce(&tx.from);
-        if tx.nonce != current_nonce + 1 {
+        let expected_nonce = current_nonce.checked_add(1).ok_or_else(|| {
+            ExecutorError::StateError(gold_state::StateError::NonceOverflow)
+        })?;
+        if tx.nonce != expected_nonce {
             return Err(ExecutorError::InvalidNonce {
-                expected: current_nonce + 1,
+                expected: expected_nonce,
                 got: tx.nonce,
             });
         }
@@ -132,7 +135,7 @@ impl Executor {
         }
 
         // Increment nonce
-        self.state.increment_nonce(&tx.from);
+        self.state.increment_nonce(&tx.from)?;
 
         debug!("Executed transaction {}", tx.hash_hex());
         Ok(())
@@ -194,21 +197,15 @@ impl Executor {
             .map(|dt| dt.with_timezone(&Utc))
             .unwrap_or_else(|_| Utc::now());
 
-        let mut doc_hash = [0u8; 32];
-        if let Ok(bytes) = hex::decode(&payload.document_hash) {
-            if bytes.len() == 32 {
-                doc_hash.copy_from_slice(&bytes);
-            }
-        }
-
         let mut certificate = GoldCertificate::new(
             payload.hsbc_reference.clone(),
             payload.gold_amount_oz,
             issue_date,
             payload.hsbc_branch.clone(),
-            doc_hash,
+            payload.document_hash,
             from.0,
-        );
+        )
+        .map_err(|e| ExecutorError::CertificateError(e.to_string()))?;
 
         certificate.notes = payload.notes.clone();
 
@@ -443,7 +440,7 @@ mod tests {
                 gold_amount_oz: 10.0,
                 issue_date: Utc::now().to_rfc3339(),
                 hsbc_branch: "Test Branch".to_string(),
-                document_hash: hex::encode([0u8; 32]),
+                document_hash: [0u8; 32],
                 notes: None,
             }),
         );

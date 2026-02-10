@@ -238,7 +238,7 @@ for i in {1..10}; do curl -s -o /dev/null -w "%{http_code}" http://localhost:300
 **Files:**
 - `explorer/src/app/start/page.tsx` - Main portal component
 - `explorer/src/app/start/layout.tsx` - Minimal layout (no nav)
-- `docs/SECURITY_PORTAL.md` - Full documentation
+- `docs/blockchain/SECURITY_PORTAL.md` - Full documentation
 
 ---
 

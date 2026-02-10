@@ -139,10 +139,11 @@ impl StateManager {
     }
 
     /// Increment account nonce
-    pub fn increment_nonce(&self, address: &Address) {
+    pub fn increment_nonce(&self, address: &Address) -> StateResult<()> {
         if let Some(mut account) = self.accounts.get_mut(address) {
-            account.increment_nonce();
+            account.increment_nonce()?;
         }
+        Ok(())
     }
 
     /// Check nonce validity
@@ -354,7 +355,7 @@ mod tests {
         assert_eq!(state.get_nonce(&addr), 0);
 
         assert!(state.check_nonce(&addr, 1).is_ok());
-        state.increment_nonce(&addr);
+        state.increment_nonce(&addr).unwrap();
         assert_eq!(state.get_nonce(&addr), 1);
 
         assert!(state.check_nonce(&addr, 2).is_ok());
@@ -377,7 +378,8 @@ mod tests {
             "Test".to_string(),
             [0u8; 32],
             admin.0,
-        );
+        )
+        .unwrap();
         let cert_id = cert.certificate_id;
         state.register_certificate(cert).unwrap();
 

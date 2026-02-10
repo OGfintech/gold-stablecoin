@@ -55,10 +55,10 @@ export const dashboardActions: QuickAction[] = [
 
 // Map colors to hover border colors
 const hoverBorderColors: Record<IconBadgeColor, string> = {
-  primary: 'hover:border-yellow-500/50',
-  success: 'hover:border-green-500/50',
+  primary: 'hover:border-gold-300/50',
+  success: 'hover:border-emerald-500/50',
   danger: 'hover:border-red-500/50',
-  warning: 'hover:border-yellow-500/50',
+  warning: 'hover:border-gold-300/50',
   info: 'hover:border-blue-500/50',
 }
 
@@ -96,10 +96,10 @@ export function QuickActions({
               key={action.href || action.label}
               href={action.href}
               className={`
-                bg-gray-800 rounded-xl p-4
+                bg-vault-card rounded-xl p-4
                 flex flex-col items-center gap-2
-                hover:bg-gray-750 transition-colors
-                border border-gray-700
+                hover:bg-vault-cardHover transition-colors
+                border border-vault-border
                 ${hoverBorder}
               `}
             >

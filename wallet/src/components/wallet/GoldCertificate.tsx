@@ -75,7 +75,7 @@ export function GoldCertificate({
         {/* Certificate Details */}
         <div className="space-y-4">
           {/* HSBC Reference - Large */}
-          <div className="text-center py-4 bg-gray-800/50 rounded-lg border border-yellow-600/20">
+          <div className="text-center py-4 bg-vault-card/50 rounded-lg border border-yellow-600/20">
             <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">HSBC Reference Number</p>
             <p className="text-2xl font-mono font-bold text-white">{hsbcReference}</p>
           </div>
@@ -96,11 +96,11 @@ export function GoldCertificate({
 
           {/* Details Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+            <div className="bg-vault-card/30 rounded-lg p-4 border border-vault-border">
               <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Certificate ID</p>
               <p className="text-white font-mono text-sm truncate">{certificateId}</p>
             </div>
-            <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+            <div className="bg-vault-card/30 rounded-lg p-4 border border-vault-border">
               <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Issue Date</p>
               <p className="text-white">{new Date(issueDate).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -108,11 +108,11 @@ export function GoldCertificate({
                 day: 'numeric'
               })}</p>
             </div>
-            <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+            <div className="bg-vault-card/30 rounded-lg p-4 border border-vault-border">
               <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Custodian Branch</p>
               <p className="text-white">{hsbcBranch}</p>
             </div>
-            <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+            <div className="bg-vault-card/30 rounded-lg p-4 border border-vault-border">
               <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Status</p>
               <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium border ${statusColors[status]}`}>
                 <CheckCircle className="w-3 h-3" />
@@ -123,7 +123,7 @@ export function GoldCertificate({
 
           {/* Document Hash */}
           {documentHash && (
-            <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+            <div className="bg-vault-card/30 rounded-lg p-4 border border-vault-border">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-gray-500 text-xs uppercase tracking-wider">Document Hash (SHA-256)</p>
                 <button
@@ -139,7 +139,7 @@ export function GoldCertificate({
 
           {/* Owner Address */}
           {ownerAddress && (
-            <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+            <div className="bg-vault-card/30 rounded-lg p-4 border border-vault-border">
               <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">Registered Owner</p>
               <p className="text-white font-mono text-xs break-all">{ownerAddress}</p>
             </div>
@@ -177,7 +177,7 @@ export function GoldCertificate({
 // Demo/Preview component
 export function CertificatePreview() {
   return (
-    <div className="min-h-screen bg-gray-950 p-8">
+    <div className="min-h-screen bg-vault-base p-8">
       <GoldCertificate
         certificateId="CERT-2024-001-AU"
         hsbcReference="HSBC-GOLD-2024-78432"
