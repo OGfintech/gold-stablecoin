@@ -180,7 +180,9 @@ impl Mempool {
             });
         }
 
-        // Verify signature
+        // SECURITY: Verify signature FIRST (before any state lookups).
+        // This prevents mempool flooding with invalid transactions that
+        // would otherwise trigger expensive state reads for nonce validation.
         verify_transaction(&tx).map_err(|_| MempoolError::InvalidSignature)?;
 
         // Verify nonce (use checked arithmetic to prevent overflow)
@@ -474,5 +476,21 @@ mod tests {
 
         let pending = mempool.get_pending_for_address(&keypair.address());
         assert_eq!(pending.len(), 3);
+    }
+
+    #[test]
+    fn test_invalid_signature_rejected() {
+        let mempool = create_test_mempool();
+        let keypair = Keypair::generate();
+
+        mempool.state.get_or_create_account(keypair.address());
+
+        // Create a transaction with valid signature, then corrupt it
+        let mut tx = create_signed_tx(&keypair, 1);
+        // Corrupt the signature
+        tx.signature[0] ^= 0xFF;
+
+        let result = mempool.add_transaction(tx);
+        assert!(matches!(result, Err(MempoolError::InvalidSignature)));
     }
 }
