@@ -45,9 +45,12 @@ export function SecretKeyVerification() {
       setBackupVerified(true)
       setWalletCreated(true)
 
-      // Store wallet in localStorage
+      // Store wallet in localStorage (only address and publicKey, never the secretKey)
       if (state.generatedKeypair) {
-        localStorage.setItem('au_gold_wallet', JSON.stringify(state.generatedKeypair))
+        localStorage.setItem('au_gold_wallet', JSON.stringify({
+          address: state.generatedKeypair.address,
+          publicKey: state.generatedKeypair.publicKey,
+        }))
       }
 
       // Auto-advance after celebration animation
@@ -205,7 +208,10 @@ export function SecretKeyVerification() {
               setBackupVerified(true)
               setWalletCreated(true)
               if (state.generatedKeypair) {
-                localStorage.setItem('au_gold_wallet', JSON.stringify(state.generatedKeypair))
+                localStorage.setItem('au_gold_wallet', JSON.stringify({
+                  address: state.generatedKeypair.address,
+                  publicKey: state.generatedKeypair.publicKey,
+                }))
               }
               nextStep()
             }}
